@@ -321,19 +321,19 @@ cupid.on("message", async message => {
         gameStatus = "STARTED";
         var startMessage = "";
         team1.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.name = playerTag);
+          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
           startMessage += "<@" + player.id + ">"
         });
         team2.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.name = playerTag);
+          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
           startMessage += "<@" + player.id + ">"
         });
         team3.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.name = playerTag);
+          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
           startMessage += "<@" + player.id + ">"
         });
         team4.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.name = playerTag);
+          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
           startMessage += "<@" + player.id + ">"
         });
         startMessage += " your game is ready on the map **" + targetMatch.mapName + "** with the match code: **" + targetMatch.mapCode + "**";
