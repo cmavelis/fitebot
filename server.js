@@ -6,6 +6,7 @@ const Discord = require('discord.js');
 const cupid = new Discord.Client();
 const http = require('http');
 const express = require('express');
+const app = express();
 
 
 // init sqlite db
@@ -50,7 +51,31 @@ cupid.on('message', async message => {
     const m = await message.channel.send("Ping?");
     m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(cupid.ping)}ms`);
   }
+  
+  if (command === 'term') {
+    message.channel.send("Here are the common terms: https://youtu.be/OLnnjEEjDlE");
+  }
+  
+  if (command === 'create') {
+    const mapName = args[0];
+    const mapCode = args[1];
+    const gameMode = args[2];
+    const playerCount = args[3];
+    const gameType = args[4];
+  }
 });
 
 
 cupid.login(process.env.TOKEN);
+
+
+// Ping ourself once every 5 minut to keep alive
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
