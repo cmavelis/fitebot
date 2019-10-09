@@ -19,10 +19,10 @@ var db = new sqlite3.Database(dbFile);
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(function() {
   if (!exists) {
-    db.run("CREATE TABLE Players (players TEXT)");
+    db.run("CREATE TABLE Players (player TEXT, elo1 INT, elo2 INT)");
     console.log("New table players created!");
 
-    db.run("CREATE TABLE Matches (matches TEXT)");
+    db.run("CREATE TABLE Matches (mapName TEXT, mapCode TEXT, gameMode TEXT, gameType TEXT, playerCount INT, team1Players BLOB, team2Players BLOB, team3Players BLOB, team4Players BLOB ,gameStatus TEXT)");
     console.log("New table matches createds!");
   } else {
     console.log('Database "Cupid" ready to go!');
@@ -59,9 +59,16 @@ cupid.on('message', async message => {
   if (command === 'create') {
     const mapName = args[0];
     const mapCode = args[1];
-    const gameMode = args[2];
-    const playerCount = args[3];
-    const gameType = args[4];
+    const gameMode = args[2] ? args[2] : "ranked";
+    const playerCount = args[3] ? args[3] : "2";
+    const gameType = args[4] ? args[4] : "sync";
+    
+    if (!mapName || !mapCode) {
+      message.channel.send("You must provide a mapName and a mapCode. For more details, see " + prefix + "help create");
+    }
+    
+    console.log(gameMode)
+    
   }
 });
 
