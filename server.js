@@ -12,28 +12,26 @@ const app = express();
 var fs = require("fs");
 var dbFile = "./.data/sqlite.db";
 var exists = fs.existsSync(dbFile);
-var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database(dbFile);
+var sqlite = require("better-sqlite3");
+var db = new sqlite(dbFile);
 
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
-db.serialize(function() {
-  if (!exists) {
-    db.run("CREATE TABLE Players (player TEXT, elo1 INT, elo2 INT)");
-    console.log("New table players created!");
+if (!exists) {
+  db.exec("CREATE TABLE Players (player TEXT, elo1 INT, elo2 INT)");
+  console.log("New table players created!");
 
-    db.run(
-      "CREATE TABLE Matches (mapName TEXT, mapCode TEXT, owner TEXT, gameMode TEXT, gameType TEXT, playerCount INT, team1Players TEXT, team2Players TEXT, team3Players TEXT, team4Players TEXT, gameStatus TEXT)"
-    );
-    console.log("New table matches createds!");
-  } else {
-    console.log('Database "Cupid" ready to go!');
-    db.each("SELECT * from Players", function(err, row) {
-      if (row) {
-        console.log("record:", row);
-      }
-    });
-  }
-});
+  db.exec(
+    "CREATE TABLE Matches (mapName TEXT, mapCode TEXT, owner TEXT, gameMode TEXT, gameType TEXT, playerCount INT, team1Players TEXT, team2Players TEXT, team3Players TEXT, team4Players TEXT, gameStatus TEXT)"
+  );
+  console.log("New table matches createds!");
+} else {
+  console.log('Database "Cupid" ready to go!');
+  db.each("SELECT * from Players", function(err, row) {
+    if (row) {
+      console.log("record:", row);
+    }
+  });
+}
 
 var prefix = "$";
 
@@ -230,7 +228,7 @@ cupid.on("message", async message => {
         return console.error(err.message);
       }
       rows.forEach((row) => {
-        var availGame = "```" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
+        var availGame = row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
         
         var team1 = JSON.parse(row.team1Players);
         if (team1.length > 0) {
