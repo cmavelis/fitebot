@@ -62,7 +62,7 @@ cupid.on('message', async message => {
     const gameMode = args[2] ? args[2] : "ranked";
     const playerCount = args[3] ? parseInt(args[3]) : 2;
     const gameType = args[4] ? args[4] : "sync";
-    const player = message.author;
+    const player = message.author.tag;
     
     if (!mapName || !mapCode) {
       message.channel.send("You must provide a mapName and a mapCode. For more details, see " + prefix + "help create");
@@ -90,7 +90,7 @@ cupid.on('message', async message => {
     }
     
     
-    //check if the person creating the game is in our database, if not, create the player
+    // Check if the person creating the game is in our database, if not, create the player
     let ownerExistSql = "SELECT * FROM Players WHERE player = ?";
     
     db.get(ownerExistSql, [player], (err, row) => {
@@ -103,14 +103,37 @@ cupid.on('message', async message => {
           if (err) {
             return console.error(err.message);
           }
-          console.log("Created new player " + player)
+          console.log("Created new player " + player);
         });
       } else {
           console.log("Player Exists " + row.player + ", 1vs1 elo: " + row.elo1 + ", 2vs2 elo: " + row.elo2);
       }
     });
     
+    // Check if the game exists
+    let gameExistSql = "SELECT * FROM Matches WHERE mapCode = ?";
+    db.get(ownerExistSql, [mapCode], (err, row) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      if (row) {
+        message.channel.send("Game already created. To close a game, use " + prefix + "end <gameCode>. For more details, see help end");
+        return;
+      }
+    });
     
+    // Create the Game
+    let createGameSql = `INSERT INTO Matches(mapName, mapCode, owner, gameMode, gameType, playerCount, team1Players, team2Players, team3Players, team4Players, gameStatus) VALUES(?, ?, ?, ?, ?, ?, ?, "", "", "", CREATING)`;
+    var team1Players = [player];
+    db.run(createGameSql, [mapName, mapCode, player, gameMode, gameType, playerCount, team1Players], function(err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log("Created new match " + mapCode)
+      
+      
+      message.channel.send("Your Game is created successfully,  " + prefix + "end <gameCode>. For more details, see help end");
+    });
   }
 });
 
