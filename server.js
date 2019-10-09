@@ -197,6 +197,7 @@ cupid.on("message", async message => {
     var gameRows = getGamesSql.all(mapName, gameType, gameMode, playerCount);
     
     gameRows.forEach((row) => {
+      console.log(row);
       var availGame = "```css\n" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
 
       var team1 = JSON.parse(row.team1Players);
@@ -214,7 +215,7 @@ cupid.on("message", async message => {
         }
       });
 
-       var team2 = JSON.parse(row.team2Players);
+      var team2 = JSON.parse(row.team2Players);
       if (team2.length > 0) {
         availGame += "\nTeam 2: \n"
       }
@@ -291,13 +292,17 @@ cupid.on("message", async message => {
     var targetMatch = getMatchSql.get(mapCode);
     
     if (targetMatch) {
-      
-      message.channel.send("```" + message.author.username + " has joined the game " + mapCode + "```");
-      
       var team1 = JSON.parse(targetMatch.team1Players);
       var team2 = JSON.parse(targetMatch.team2Players);
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
+      
+      if (team1.includes(message.author.tag) || team2.includes(message.author.tag) || team3.includes(message.author.tag) || team4.includes(message.author.tag)) {
+        message.channel.send("<@" + message.author.id + "> you are already in this game!")
+      }
+      
+      message.channel.send("```" + message.author.username + " has joined the game " + mapCode + "```");
+      
       
       if (team === 1) {
         team1.push(message.author.tag);
@@ -305,7 +310,7 @@ cupid.on("message", async message => {
         team2.push(message.author.tag);
       } else if (team === 3) {
         team3.push(message.author.tag);
-      } else if (team === 2) {
+      } else if (team === 4) {
         team4.push(message.author.tag);
       }
       
@@ -315,13 +320,26 @@ cupid.on("message", async message => {
         gameStatus = "STARTED";
         var startMessage = "";
         team1.forEach(function (playerTag, index) {
-          let player = client.users.find("tag", "playerTag");
-          startMessage += "@" + player +", "
+          let player = cupid.users.find("tag", playerTag);
+          startMessage += "<@" + player.id + ">"
         });
-        message.channel.send("@");
+        team2.forEach(function (playerTag, index) {
+          let player = cupid.users.find("tag", playerTag);
+          startMessage += "<@" + player.id + ">"
+        });
+        team3.forEach(function (playerTag, index) {
+          let player = cupid.users.find("tag", playerTag);
+          startMessage += "<@" + player.id + ">"
+        });
+        team4.forEach(function (playerTag, index) {
+          let player = cupid.users.find("tag", playerTag);
+          startMessage += "<@" + player.id + ">"
+        });
+        startMessage += " your game is ready on the map " + targetMatch.mapName + " with the match code: " + targetMatch.mapCode;
+        message.channel.send(startMessage);
       }
       
-      
+      updateMatchSql.run(team1, team2, team3, team4, gameStatus, mapCode);
       
     }
   }
