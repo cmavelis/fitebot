@@ -108,7 +108,7 @@ cupid.on("message", async message => {
       return;
     }
 
-    if (gameType !== "sync" && gameMode !== "async") {
+    if (gameType !== "sync" && gameType !== "async") {
       message.channel.send(
         "You must provide a valid game type. For more details, see " +
           prefix +
@@ -118,7 +118,7 @@ cupid.on("message", async message => {
     }
 
     // Check if the person creating the game is in our database, if not, create the player
-    let ownerExistSql = "SELECT * FROM Players WHERE player = ?";
+    let ownerExistSql = `SELECT * FROM Players WHERE player = ?`;
 
     db.get(ownerExistSql, [player], (err, row) => {
       if (err) {
@@ -126,7 +126,7 @@ cupid.on("message", async message => {
       }
       if (!row) {
         let newOwnerSql =
-          "INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)";
+          `INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)`;
         db.run(newOwnerSql, [player], function(err) {
           if (err) {
             return console.error(err.message);
@@ -147,7 +147,7 @@ cupid.on("message", async message => {
 
     // Check if the game exists
     var isGameExist = true;
-    let gameExistSql = "SELECT * FROM Matches WHERE mapCode = ?";
+    let gameExistSql = `SELECT * FROM Matches WHERE mapCode = ?`;
     db.get(gameExistSql, [mapCode], (err, row) => {
       if (err) {
         console.error(err.message);
@@ -186,6 +186,43 @@ cupid.on("message", async message => {
         );
       }
     });
+  }
+  
+  if (command === "games") {
+    const mapName = args[0] ? args[0] : "any";
+    const gameType = args[1] ? args[1] : "any";
+    const gameMode = args[2] ? args[2] : "any";
+    const playerCount = args[3] ? parseInt(args[3]) : "any";
+    
+    
+    if ((playerCount < 2 || playerCount > 4) && playerCount !== "any") {
+      message.channel.send(
+        "You must provide a player count between 2 to 4. For more details, see " +
+          prefix +
+          "help create"
+      );
+      return;
+    }
+
+    if (gameMode !== "ranked" && gameMode !== "unranked" && gameMode !== "any") {
+      message.channel.send(
+        "You must provide a valid game mode. For more details, see " +
+          prefix +
+          "help create"
+      );
+      return;
+    }
+
+    if (gameType !== "sync" && gameType !== "async" && gameType !== "any") {
+      message.channel.send(
+        "You must provide a valid game type. For more details, see " +
+          prefix +
+          "help create"
+      );
+      return;
+    }
+    
+    let getGamesSql = `SELECT * FROM Matches WHERE mapName = ? AND gameType = ? AND gameMode = ? AND playerCount = ?`;
   }
 });
 
