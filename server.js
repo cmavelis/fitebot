@@ -291,14 +291,38 @@ cupid.on("message", async message => {
     var targetMatch = getMatchSql.get(mapCode);
     
     if (targetMatch) {
+      
+      message.channel.send("```" + message.author.username + " has joined the game " + mapCode + "```");
+      
       var team1 = JSON.parse(targetMatch.team1Players);
       var team2 = JSON.parse(targetMatch.team2Players);
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
       
       if (team === 1) {
-        team1.push()
+        team1.push(message.author.tag);
+      } else if (team === 2) {
+        team2.push(message.author.tag);
+      } else if (team === 3) {
+        team3.push(message.author.tag);
+      } else if (team === 2) {
+        team4.push(message.author.tag);
       }
+      
+      var totalPlayers = team1.length + team2.length + team3.length + team4.length;
+      var gameStatus = targetMatch.gameStatus;
+      if (totalPlayers == targetMatch.playerCount) {
+        gameStatus = "STARTED";
+        var startMessage = "";
+        team1.forEach(function (playerTag, index) {
+          let player = client.users.find("tag", "playerTag");
+          startMessage += "@" + player +", "
+        });
+        message.channel.send("@");
+      }
+      
+      
+      
     }
   }
   
