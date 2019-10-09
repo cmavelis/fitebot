@@ -22,7 +22,7 @@ db.serialize(function() {
     db.run("CREATE TABLE Players (player TEXT, elo1 INT, elo2 INT)");
     console.log("New table players created!");
 
-    db.run("CREATE TABLE Matches (mapName TEXT, mapCode TEXT, gameMode TEXT, gameType TEXT, playerCount INT, team1Players BLOB, team2Players BLOB, team3Players BLOB, team4Players BLOB ,gameStatus TEXT)");
+    db.run("CREATE TABLE Matches (mapName TEXT, mapCode TEXT, gameMode TEXT, gameType TEXT, playerCount INT, team1Players TEXT, team2Players TEXT, team3Players TEXT, team4Players TEXT ,gameStatus TEXT)");
     console.log("New table matches createds!");
   } else {
     console.log('Database "Cupid" ready to go!');
@@ -60,12 +60,16 @@ cupid.on('message', async message => {
     const mapName = args[0];
     const mapCode = args[1];
     const gameMode = args[2] ? args[2] : "ranked";
-    const playerCount = args[3] ? args[3] : "2";
+    const playerCount = args[3] ? args[3] : 2;
     const gameType = args[4] ? args[4] : "sync";
+    const player = message.author;
     
     if (!mapName || !mapCode) {
       message.channel.send("You must provide a mapName and a mapCode. For more details, see " + prefix + "help create");
     }
+    
+    if (playerCount)
+    
     
     console.log(gameMode)
     
