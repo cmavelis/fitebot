@@ -69,7 +69,7 @@ cupid.on('message', async message => {
       return;
     }
     
-    if (mapCode.lenth != 6 ) {
+    if (mapCode.length != 6 ) {
       message.channel.send("You must provide a map code that is 6 characters. For more details, see " + prefix + "help create");
       return;
     } 
@@ -89,16 +89,25 @@ cupid.on('message', async message => {
       return;
     }
     
-    let ownerExist = `SELECT * FROM Players
-                      WHERE player = ?`;
     
-    db.all(ownerExist, [player], (err, rows) => {
+    //check if the person creating the game is in our database, if not, create the player
+    let ownerExistSql = "SELECT * FROM Players WHERE player = ?";
+    
+    db.get(ownerExistSql, [player], (err, row) => {
       if (err) {
         return console.error(err.message);
       }
-      rows.forEach(row => {
-        console.log(row.name);
-      });
+      if (!row) {
+        let newOwnerSql = "INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)";
+        db.run(newOwnerSql, [player], function(err) {
+          if (err) {
+            return console.error(err.message);
+          }
+          console.log("Created new player " + player)
+        });
+      } else {
+          console.log("Player Exists " + row.player + ", 1vs1 elo: " + row.elo1 + ", 2vs2 elo: " + row.elo2);
+      }
     });
     
     
