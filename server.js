@@ -58,7 +58,7 @@ cupid.on("message", async message => {
     );
   }
 
-  if (command === "term") {
+  if (command === "term" || command === "terms") {
     message.channel.send(
       "Here are the common terms: https://youtu.be/OLnnjEEjDlE"
     );
@@ -223,14 +223,23 @@ cupid.on("message", async message => {
     }
     
     let getGamesSql = `SELECT * FROM Matches WHERE mapName like ? AND gameType like ? AND gameMode like ? AND playerCount like ?`;
-  
+    let getPlayerSql = `SELECT * FROM Players WHERE player = ?`;
     
     db.all(getGamesSql, [mapName, gameType, gameMode, playerCount], (err, rows) => {
       if (err) {
         return console.error(err.message);
       }
       rows.forEach((row) => {
-        var availGame = row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
+        var availGame = "```" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount + "\nTeam 1:\n";
+        var team1 = JSON.parse(row.team1Players);
+        team1.forEach(function (player, index) {
+          db.get(getPlayerSql, [player], (err, playerRow) => {
+            if (err) {
+              return console.err(err.message);
+            }
+            availGame += playerRow.player + ": " 
+          });
+        });
         message.channel.send(availGame);
       });
     });
