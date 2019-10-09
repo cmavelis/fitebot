@@ -26,11 +26,6 @@ if (!exists) {
   console.log("New table matches createds!");
 } else {
   console.log('Database "Cupid" ready to go!');
-  db.each("SELECT * from Players", function(err, row) {
-    if (row) {
-      console.log("record:", row);
-    }
-  });
 }
 
 var prefix = "$";
@@ -116,74 +111,45 @@ cupid.on("message", async message => {
     }
 
     // Check if the person creating the game is in our database, if not, create the player
-    let ownerExistSql = `SELECT * FROM Players WHERE player = ?`;
+    let ownerExistSql = db.prepare('SELECT * FROM Players WHERE player = ?');
 
-    db.get(ownerExistSql, [player], (err, row) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      if (!row) {
-        let newOwnerSql =
-          `INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)`;
-        db.run(newOwnerSql, [player], function(err) {
-          if (err) {
-            return console.error(err.message);
-          }
-          console.log("Created new player " + player);
-        });
-      } else {
-        console.log(
-          "Player Exists " +
-            row.player +
-            ", 1vs1 elo: " +
-            row.elo1 +
-            ", 2vs2 elo: " +
-            row.elo2
-        );
-      }
-    });
+    const playerRow = ownerExistSql.get(player)
+    if (!playerRow) {
+      let newOwnerSql = db.prepare('INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)');
+      newOwnerSql.run(player);
+      console.log("Created new player " + player);
+    } else {
+      console.log(
+        "Player Exists " +
+          playerRow.player +
+          ", 1vs1 elo: " +
+          playerRow.elo1 +
+          ", 2vs2 elo: " +
+          playerRow.elo2
+      );
+    }
 
     // Check if the game exists
     var isGameExist = true;
-    let gameExistSql = `SELECT * FROM Matches WHERE mapCode = ?`;
-    db.get(gameExistSql, [mapCode], (err, row) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      if (row) {
-        message.channel.send(
-          "Game already created. To close a game, use " +
-            prefix +
-            "end <gameCode>. For more details, see help end"
-        );
-      } else {
-        // Create the Game
-        let createGameSql = `INSERT INTO Matches(mapName, mapCode, owner, gameMode, gameType, playerCount, team1Players, team2Players, team3Players, team4Players, gameStatus) VALUES(?, ?, ?, ?, ?, ?, ?, "[]", "[]", "[]", "CREATING")`;
-        var team1Players = [player];
-        db.run(
-          createGameSql,
-          [
-            mapName,
-            mapCode,
-            player,
-            gameMode,
-            gameType,
-            playerCount,
-            JSON.stringify(team1Players)
-          ],
-          function(err) {
-            if (err) {
-              return console.error(err.message);
-            }
-            console.log("Created new match " + mapCode);
+    let gameExistSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    const gameRow = gameExistSql.get(mapCode);
+    if (gameRow) {
+      message.channel.send(
+        "Game already created. To close a game, use " +
+          prefix +
+          "end <gameCode>. For more details, see help end"
+      );
+    } else {
+      // Create the Game
+      let createGameSql = db.prepare('INSERT INTO Matches(mapName, mapCode, owner, gameMode, gameType, playerCount, team1Players, team2Players, team3Players, team4Players, gameStatus) VALUES(?, ?, ?, ?, ?, ?, ?, "[]", "[]", "[]", "CREATING")');
+      var team1Players = [player];
+      createGameSql.run(mapName, mapCode, player, gameMode, gameType, playerCount, JSON.stringify(team1Players));
+      console.log("Created new match " + mapCode);
 
-            message.channel.send(
-              "Your Game is created successfully, please wait for others to join your game."
-            );
-          }
-        );
-      }
-    });
+      message.channel.send(
+        "Your Game is created successfully, please wait for others to join your game."
+      );
+    }
   }
   
   if (command === "games") {
@@ -220,92 +186,80 @@ cupid.on("message", async message => {
       return;
     }
     
-    let getGamesSql = `SELECT * FROM Matches WHERE mapName like ? AND gameType like ? AND gameMode like ? AND playerCount like ?`;
-    let getPlayerSql = `SELECT * FROM Players WHERE player = ?`;
+    let getGamesSql = db.prepare('SELECT * FROM Matches WHERE mapName like ? AND gameType like ? AND gameMode like ? AND playerCount like ?');
+    let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
     
-    db.all(getGamesSql, [mapName, gameType, gameMode, playerCount], (err, rows) => {
-      if (err) {
-        return console.error(err.message);
+    var gameRows = getGamesSql.all(mapName, gameType, gameMode, playerCount);
+    
+    gameRows.forEach((row) => {
+      var availGame = "```css" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
+
+      var team1 = JSON.parse(row.team1Players);
+      if (team1.length > 0) {
+        availGame += "\nTeam 1: \n"
       }
-      rows.forEach((row) => {
-        var availGame = row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
-        
-        var team1 = JSON.parse(row.team1Players);
-        if (team1.length > 0) {
-          availGame += "\nTeam 1: \n"
+      team1.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += playerRow.player;
+
+        console.log(availGame);
+        if (row.playerCount === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (row.playerCount === 2) {
+          availGame += ": " + playerRow.elo1;
         }
-        team1.forEach(function (player, index) {
-          console.log(player);
-          db.get(getPlayerSql, [player], (err, playerRow) => {
-            if (err) {
-              return console.err(err.message);
-            }
-            availGame += playerRow.player;
-            
-            console.log(availGame);
-            if (row.playerCount === 4) {
-              availGame += ": " + playerRow.elo2;
-            } else if (row.playerCOunt === 2) {
-              availGame += ": " + playerRow.elo1;
-            }
-          });
-        });
-        
-        var team2 = JSON.parse(row.team2Players);
-        if (team2.length > 0) {
-          availGame += "\nTeam 2: \n"
-        }
-        team2.forEach(function (player, index) {
-          db.get(getPlayerSql, [player], (err, playerRow) => {
-            if (err) {
-              return console.err(err.message);
-            }
-            availGame += playerRow.player;
-            if (row.playerCount === 4) {
-              availGame += ": " + playerRow.elo2;
-            } else if (row.playerCOunt === 2) {
-              availGame += ": " + playerRow.elo1;
-            }
-          });
-        });
-        
-        var team3 = JSON.parse(row.team3Players);
-        if (team3.length > 0) {
-          availGame += "\nTeam 3: \n"
-        }
-        team3.forEach(function (player, index) {
-          db.get(getPlayerSql, [player], (err, playerRow) => {
-            if (err) {
-              return console.err(err.message);
-            }
-            availGame += playerRow.player;
-            if (row.playerCount === 4) {
-              availGame += ": " + playerRow.elo2;
-            } else if (row.playerCOunt === 2) {
-              availGame += ": " + playerRow.elo1;
-            }
-          });
-        });
-        
-        var team4 = JSON.parse(row.team4Players);
-        if (team4.length > 0) {
-          availGame += "\nTeam 4: \n"
-        }
-        team4.forEach(function (player, index) {
-          db.get(getPlayerSql, [player], (err, playerRow) => {
-            if (err) {
-              return console.err(err.message);
-            }
-            availGame += playerRow.player;
-            if (row.playerCount === 4) {
-              availGame += ": " + playerRow.elo2;
-            } else if (row.playerCOunt === 2) {
-              availGame += ": " + playerRow.elo1;
-            }
-          });
-        });
-        message.channel.send(availGame);
       });
+
+       var team2 = JSON.parse(row.team2Players);
+      if (team2.length > 0) {
+        availGame += "\nTeam 2: \n"
+      }
+      team2.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += playerRow.player;
+
+        console.log(availGame);
+        if (row.playerCount === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (row.playerCount === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+      
+       var team3 = JSON.parse(row.team3Players);
+      if (team3.length > 0) {
+        availGame += "\nTeam 3: \n"
+      }
+      team3.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += playerRow.player;
+
+        console.log(availGame);
+        if (row.playerCount === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (row.playerCount === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+      
+      var team4 = JSON.parse(row.team4Players);
+      if (team4.length > 0) {
+        availGame += "\nTeam 4: \n"
+      }
+      team4.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += playerRow.player;
+
+        console.log(availGame);
+        if (row.playerCount === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (row.playerCount === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+      
+      availGame += "```";
+      message.channel.send(availGame);
     });
   }
 });
