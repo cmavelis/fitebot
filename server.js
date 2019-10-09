@@ -263,6 +263,46 @@ cupid.on("message", async message => {
       message.channel.send(availGame);
     });
   }
+  
+  if (command === "join") {
+    const mapCode = args[0];
+    const team = args[1] ? parseInt(args[1]) : 2;
+    
+    if (!mapCode || mapCode.length != 6) {
+      message.channel.send(
+        "You must provide a valid game code. For more details, see " +
+          prefix +
+          "help join"
+      );
+      return;
+    }
+    if (team < 1 || team > 4) {
+      message.channel.send(
+        "You must provide a valid team. For more details, see " +
+          prefix +
+          "help join"
+      );
+      return;
+    }
+    
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?, gameStatus = ? WHERE mapCode = ?');
+    
+    var targetMatch = getMatchSql.get(mapCode);
+    
+    if (targetMatch) {
+      var team1 = JSON.parse(targetMatch.team1Players);
+      var team2 = JSON.parse(targetMatch.team2Players);
+      var team3 = JSON.parse(targetMatch.team3Players);
+      var team4 = JSON.parse(targetMatch.team4Players);
+      
+      if (team === 1) {
+        team1.push()
+      }
+    }
+  }
+  
+  
 });
 
 cupid.login(process.env.TOKEN);
