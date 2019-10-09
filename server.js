@@ -150,7 +150,7 @@ cupid.on("message", async message => {
     let gameExistSql = `SELECT * FROM Matches WHERE mapCode = ?`;
     db.get(gameExistSql, [mapCode], (err, row) => {
       if (err) {
-        console.error(err.message);
+        return console.error(err.message);
       }
       if (row) {
         message.channel.send(
@@ -189,40 +189,52 @@ cupid.on("message", async message => {
   }
   
   if (command === "games") {
-    const mapName = args[0] ? args[0] : "any";
-    const gameType = args[1] ? args[1] : "any";
-    const gameMode = args[2] ? args[2] : "any";
-    const playerCount = args[3] ? parseInt(args[3]) : "any";
+    const mapName = args[0] && args[0] !== "any" ? args[0] : "%";
+    const gameType = args[1] && args[1] !== "any" ? args[1] : "%";
+    const gameMode = args[2] && args[2] !== "any" ? args[2] : "%";
+    const playerCount = args[3] && args[3] !== "any" ? parseInt(args[3]) : "%";
     
     
-    if ((playerCount < 2 || playerCount > 4) && playerCount !== "any") {
+    if ((isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) && playerCount !== "playerCount") {
       message.channel.send(
         "You must provide a player count between 2 to 4. For more details, see " +
           prefix +
-          "help create"
+          "help games"
       );
       return;
     }
 
-    if (gameMode !== "ranked" && gameMode !== "unranked" && gameMode !== "any") {
+    if (gameMode !== "ranked" && gameMode !== "unranked" && gameMode !== "gameMode") {
       message.channel.send(
         "You must provide a valid game mode. For more details, see " +
           prefix +
-          "help create"
+          "help games"
       );
       return;
     }
 
-    if (gameType !== "sync" && gameType !== "async" && gameType !== "any") {
+    if (gameType !== "sync" && gameType !== "async" && gameType !== "gameType") {
       message.channel.send(
         "You must provide a valid game type. For more details, see " +
           prefix +
-          "help create"
+          "help games"
       );
       return;
     }
     
     let getGamesSql = `SELECT * FROM Matches WHERE mapName = ? AND gameType = ? AND gameMode = ? AND playerCount = ?`;
+  
+    
+    db.all(getGamesSql, [mapName, gameType, gameMode, playerCount], (err, rows) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      rows.forEach((row) => {
+        var message = row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
+        console.log(message);
+        message.channel.send(message);
+      });
+    });
   }
 });
 
