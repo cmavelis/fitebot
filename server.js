@@ -1,6 +1,13 @@
 // server.js
 // where your node app starts
 
+// init discord bot and http express
+const Discord = require('discord.js');
+const cupid = new Discord.Client();
+const http = require('http');
+const express = require('express');
+
+
 // init sqlite db
 var fs = require("fs");
 var dbFile = "./.data/sqlite.db";
@@ -26,3 +33,15 @@ db.serialize(function() {
   }
 });
 
+
+// 'client.on('message')' commands are triggered when the
+// specified message is read in a text channel that the bot is in.
+
+cupid.on('message', message => {
+  if (message.content === 'ping') {
+    message.reply('pong');
+  }
+});
+
+
+cupid.login(process.env.TOKEN);
