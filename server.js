@@ -33,13 +33,22 @@ db.serialize(function() {
   }
 });
 
+var prefix = "$";
 
 // 'client.on('message')' commands are triggered when the
 // specified message is read in a text channel that the bot is in.
 
-cupid.on('message', message => {
-  if (message.content === 'ping') {
-    message.reply('pong');
+cupid.on('message', async message => {
+  
+  // If it's not the prefix, ignore it
+  if(message.content.indexOf(prefix) !== 0) return;
+  // Figure out the command and the arguement
+  const args = message.content.slice(1).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
+  
+  if (command === 'ping') {
+    const m = await message.channel.send("Ping?");
+    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(cupid.ping)}ms`);
   }
 });
 
