@@ -50,6 +50,11 @@ cupid.on("message", async message => {
         message.createdTimestamp}ms. API Latency is ${Math.round(cupid.ping)}ms`
     );
   }
+  
+  if (command === "flipCoin" || command === "fc" || command === "coin") {
+    const m = (Math.floor(Math.random() * 2) == 0) ? 'heads' : 'tails'
+    message.channel.send("```" + message.author.username + " flipped a coin and got " + m + "```");
+  }
 
   if (command === "term" || command === "terms") {
     message.channel.send(
@@ -192,7 +197,7 @@ cupid.on("message", async message => {
     var gameRows = getGamesSql.all(mapName, gameType, gameMode, playerCount);
     
     gameRows.forEach((row) => {
-      var availGame = "```css" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
+      var availGame = "```css\n" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
 
       var team1 = JSON.parse(row.team1Players);
       if (team1.length > 0) {
@@ -202,7 +207,6 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += playerRow.player;
 
-        console.log(availGame);
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
         } else if (row.playerCount === 2) {
@@ -218,7 +222,6 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += playerRow.player;
 
-        console.log(availGame);
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
         } else if (row.playerCount === 2) {
@@ -234,7 +237,6 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += playerRow.player;
 
-        console.log(availGame);
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
         } else if (row.playerCount === 2) {
@@ -250,7 +252,6 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += playerRow.player;
 
-        console.log(availGame);
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
         } else if (row.playerCount === 2) {
