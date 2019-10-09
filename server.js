@@ -195,7 +195,7 @@ cupid.on("message", async message => {
     const playerCount = args[3] && args[3] !== "any" ? parseInt(args[3]) : "%";
     
     
-    if ((isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) && playerCount !== "playerCount") {
+    if ((isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) && playerCount !== "%") {
       message.channel.send(
         "You must provide a player count between 2 to 4. For more details, see " +
           prefix +
@@ -204,7 +204,7 @@ cupid.on("message", async message => {
       return;
     }
 
-    if (gameMode !== "ranked" && gameMode !== "unranked" && gameMode !== "gameMode") {
+    if (gameMode !== "ranked" && gameMode !== "unranked" && gameMode !== "%") {
       message.channel.send(
         "You must provide a valid game mode. For more details, see " +
           prefix +
@@ -213,7 +213,7 @@ cupid.on("message", async message => {
       return;
     }
 
-    if (gameType !== "sync" && gameType !== "async" && gameType !== "gameType") {
+    if (gameType !== "sync" && gameType !== "async" && gameType !== "%") {
       message.channel.send(
         "You must provide a valid game type. For more details, see " +
           prefix +
@@ -222,7 +222,7 @@ cupid.on("message", async message => {
       return;
     }
     
-    let getGamesSql = `SELECT * FROM Matches WHERE mapName = ? AND gameType = ? AND gameMode = ? AND playerCount = ?`;
+    let getGamesSql = `SELECT * FROM Matches WHERE mapName like ? AND gameType like ? AND gameMode like ? AND playerCount like ?`;
   
     
     db.all(getGamesSql, [mapName, gameType, gameMode, playerCount], (err, rows) => {
@@ -230,9 +230,8 @@ cupid.on("message", async message => {
         return console.error(err.message);
       }
       rows.forEach((row) => {
-        var message = row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
-        console.log(message);
-        message.channel.send(message);
+        var availGame = row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + row.playerCount;
+        message.channel.send(availGame);
       });
     });
   }
