@@ -855,7 +855,7 @@ cupid.on("message", async message => {
     var targetMatch = getMatchSql.get(mapCode);
     
     if (targetMatch) {
-      if (targetMatch.gameType === "unranked") {
+      if (targetMatch.gameMode === "unranked") {
         message.channel.send("concluded an unranked game " + mapCode);
         return;
       }
