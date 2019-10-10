@@ -799,7 +799,7 @@ cupid.on("message", async message => {
     }
     
     
-    if (result !== "win" && result !== "draw") {
+    if (result !== "win" && result !== "draw" && result !== "abandon") {
       message.channel.send(
         "You must provide a valid result between \"win\" and \"draw\", see " +
           prefix +
@@ -808,7 +808,7 @@ cupid.on("message", async message => {
       return;
     }
     
-    if (team !== "1" && team !== "2" && team !== "3" && team !== "4" && result !== "draw") {
+    if (team !== "1" && team !== "2" && team !== "3" && team !== "4" && result === "win") {
       message.channel.send(
         "You must provide a valid team between 1 to 4. For more details, see " +
           prefix +
@@ -828,9 +828,9 @@ cupid.on("message", async message => {
         return;
       }
       
-      if (result === "draw") {
+      if (result === "abandon") {
         message.channel.send(
-          "The match " + mapCode + "ended in a draw, no elo changes will be applied"
+          "The match " + mapCode + "was abandoned, no elo changes will be applied"
         );
         return;
       }
@@ -839,6 +839,24 @@ cupid.on("message", async message => {
       var team2 = JSON.parse(targetMatch.team2Players);
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
+      
+      if (team1.length + team2.length + team3.length + team4.length == 2 && team1.length <= 1 && team2.length <= 1 && team3.length <= 1 && team4.length <= 1) {
+        var player1 = team1.length == 1 ? team1.pop() : team2.length == 1 ? team2.pop() : team3.pop();
+        var player2 = team4.length == 1 ? team4.pop() : team3.length == 1 ? team3.pop() : team2.pop();
+        
+        var player1Data = getPlayerSql.run(player1);
+        var player2Data = getPlayerSql.run(player2);
+        
+        var r1 = Math.pow(10, player1Data.elo1 / 400);
+        var r2 = Math.pow(10, player2Data.elo1 / 400);
+        
+        var e1 = r1 / (r1 + r2);
+        var e2 = r2 / (r1 + r2);
+        
+        var s1;
+        if (result == "win" )
+        
+      }
       
       
     } else {
