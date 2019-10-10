@@ -57,6 +57,11 @@ cupid.on("message", async message => {
   }
   
   if (command === "setting") {
+    if (!message.member.guild.me.hasPermission('ADMINISTRATOR')) {
+      message.channel.send("This is an admin only command");
+      return;
+    }
+    
     const subSetting = args[0];
     if (!subSetting) {
       message.channel.send(
@@ -79,6 +84,11 @@ cupid.on("message", async message => {
       }
       
       prefix = newPrefix;
+      message.channel.send(
+        "Prefix for the bot commands have been changed to" + prefix
+      );
+      return;
+      
     }
     
     if (subSetting === "1v1Role") {
@@ -456,13 +466,13 @@ cupid.on("message", async message => {
       message.channel.send("```" + message.author.username + " has swapped to team " + team + " in the game " + mapCode + "```");
       
       const team1Index = team1.findIndex(x => x === message.author.id);
-      if (team1Index !== undefined) team1.splice(team1Index, 1);      
+      if (team1Index >= 0) team1.splice(team1Index, 1);      
       const team2Index = team2.findIndex(x => x === message.author.id);
-      if (team2Index !== undefined) team2.splice(team2Index, 1);      
+      if (team2Index >= 0) team2.splice(team2Index, 1);      
       const team3Index = team3.findIndex(x => x === message.author.id);
-      if (team3Index !== undefined) team3.splice(team3Index, 1);      
+      if (team3Index >= 0) team3.splice(team3Index, 1);      
       const team4Index = team4.findIndex(x => x === message.author.id);
-      if (team4Index !== undefined) team4.splice(team4Index, 1);
+      if (team4Index >= 0) team4.splice(team4Index, 1);
       
       if (team === 1) {
         team1.push(message.author.id);
@@ -516,13 +526,13 @@ cupid.on("message", async message => {
       message.channel.send("```" + message.author.username + " has left the game " + mapCode + ".```");
       
       const team1Index = team1.findIndex(x => x === message.author.id);
-      if (team1Index !== undefined) team1.splice(team1Index, 1);      
+      if (team1Index >= 0) team1.splice(team1Index, 1);      
       const team2Index = team2.findIndex(x => x === message.author.id);
-      if (team2Index !== undefined) team2.splice(team2Index, 1);      
+      if (team2Index >= 0) team2.splice(team2Index, 1);      
       const team3Index = team3.findIndex(x => x === message.author.id);
-      if (team3Index !== undefined) team3.splice(team3Index, 1);      
+      if (team3Index >= 0) team3.splice(team3Index, 1);      
       const team4Index = team4.findIndex(x => x === message.author.id);
-      if (team4Index !== undefined) team4.splice(team4Index, 1);
+      if (team4Index >= 0) team4.splice(team4Index, 1);
       
       if (team1.length == 0 && team2.length == 0 && team3.length == 0 && team4.length == 0) {
         message.channel.send("```All players have left the game " + mapCode + ". The game will be deleted```");
