@@ -819,8 +819,10 @@ cupid.on("message", async message => {
     
     let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
     let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
+    let updatePlayerELO1Sql = db.prepare('UPDATE Players SET elo1 = ? WHERE player = ?');
+    let updatePlayerELO2Sql = db.prepare('UPDATE Players SET elo2 = ? WHERE player = ?');
     
-    var targetMatch = getMatchSql.run(mapCode);
+    var targetMatch = getMatchSql.get(mapCode);
     
     if (targetMatch) {
       if (targetMatch.gameType === "unranked") {
@@ -841,21 +843,55 @@ cupid.on("message", async message => {
       var team4 = JSON.parse(targetMatch.team4Players);
       
       if (team1.length + team2.length + team3.length + team4.length == 2 && team1.length <= 1 && team2.length <= 1 && team3.length <= 1 && team4.length <= 1) {
-        var player1 = team1.length == 1 ? team1.pop() : team2.length == 1 ? team2.pop() : team3.pop();
-        var player2 = team4.length == 1 ? team4.pop() : team3.length == 1 ? team3.pop() : team2.pop();
+        var winner;
+        var loser;
+        if (result === "win" && team === "1") {
+          winner = team1.pop();
+          loser = team2.length > 0 ? team2.pop() : team3.length > 0 ? team3.pop() : team4.pop();
+        } else if (result === "win" && team === "2") {
+          winner = team2.pop();
+          loser = team1.length > 0 ? team1.pop() : team3.length > 0 ? team3.pop() : team4.pop();
+        } else if (result === "win" && team === "3") {
+          winner = team3.pop();
+          loser = team1.length > 0 ? team1.pop() : team2.length > 0 ? team2.pop() : team4.pop();
+        } else if (result === "win" && team === "4") {
+          winner = team4.pop();
+          loser = team1.length > 0 ? team1.pop() : team2.length > 0 ? team2.pop() : team3.pop();
+        } else {
+          winner = team1.length == 1 ? team1.pop() : team2.length == 1 ? team2.pop() : team3.pop();
+          loser = team4.length == 1 ? team4.pop() : team3.length == 1 ? team3.pop() : team2.pop();
+        }
         
-        var player1Data = getPlayerSql.run(player1);
-        var player2Data = getPlayerSql.run(player2);
+        var wData = getPlayerSql.get(winner);
+        var lData = getPlayerSql.get(loser);
         
-        var r1 = Math.pow(10, player1Data.elo1 / 400);
-        var r2 = Math.pow(10, player2Data.elo1 / 400);
+        var r1 = Math.pow(10, wData.elo1 / 400);
+        var r2 = Math.pow(10, lData.elo1 / 400);
         
         var e1 = r1 / (r1 + r2);
         var e2 = r2 / (r1 + r2);
         
         var s1;
-        if (result == "win" )
+        var s2;
+        if (result == "win") {
+          s1 = 1;
+          s2 = 0;
+        } else {
+          s1 = 0.5;
+          s2 = 0.5;
+        }
+        var newr1 = r1 + 32 * (s1 - e1);
+        var newr2 = r2 + 32 * (s2 - e2);
+        updatePlayerELO1Sql.run(newr1, winner);
+        updatePlayerELO1Sql.run(newr2, loser);
         
+        let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode = ?');
+        deleteMatchSql.run(mapCode);
+        
+        message.channel.send(
+          "The match " + mapCode + "is completed. Player elos have been updated, please use " + prefix + "elo to check your current elo"
+        );
+        return;
       }
       
       
