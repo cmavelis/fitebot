@@ -21,9 +21,13 @@ if (!exists) {
   console.log("New table players created!");
 
   db.exec(
-    "CREATE TABLE Matches (mapName TEXT, mapCode TEXT, owner TEXT, gameMode TEXT, gameType TEXT, playerCount INT, team1Players TEXT, team2Players TEXT, team3Players TEXT, team4Players TEXT, gameStatus TEXT)"
+    "CREATE TABLE Matches (mapName TEXT, mapCode TEXT, owner TEXT, gameMode TEXT, gameType TEXT, playerCount TEXT, team1Players TEXT, team2Players TEXT, team3Players TEXT, team4Players TEXT, gameStatus TEXT)"
   );
   console.log("New table matches createds!");
+  
+  db.exec(
+    "CREATE TABLE Maps (mapName TEXT, mapCode TEXT, owner TEXT, playerCount TEXT, rating TEXT)"
+  );
 } else {
   console.log('Database "Cupid" ready to go!');
 }
@@ -163,8 +167,8 @@ cupid.on("message", async message => {
     const gameMode = args[2] && args[2] !== "any" ? args[2] : "%";
     const playerCount = args[3] && args[3] !== "any" ? parseInt(args[3]) : "%";
     
-    
-    if ((isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) && playerCount !== "%") {
+    console.log(isNaN(playerCount));
+    if ((!isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) && playerCount !== "%") {
       message.channel.send(
         "You must provide a player count between 2 to 4. For more details, see " +
           prefix +
