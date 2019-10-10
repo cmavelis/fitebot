@@ -34,6 +34,8 @@ if (!exists) {
 }
 
 var prefix = "$";
+var oneRole = "LFM";
+var twoRole = "LFM 2v2";
 
 // 'client.on('message')' commands are triggered when the
 // specified message is read in a text channel that the bot is in.
@@ -57,7 +59,7 @@ cupid.on("message", async message => {
   }
   
   if (command === "setting") {
-    if (!message.member.guild.me.hasPermission('ADMINISTRATOR')) {
+    if (!message.member.hasPermission('ADMINISTRATOR')) {
       message.channel.send("This is an admin only command");
       return;
     }
@@ -101,7 +103,26 @@ cupid.on("message", async message => {
         );
         return;
       }
-      
+      oneRole = newRole;
+      message.channel.send(
+        "1vs1 role have been set to" + oneRole
+      );
+    }
+    
+    if (subSetting === "2v2Role") {
+      const newRole = args[1];
+      if (!newRole) {
+        message.channel.send(
+          "You must provide a valid role. For more details, see " +
+            prefix +
+            "help setting 2v2Role"
+        );
+        return;
+      }
+      twoRole = newRole;
+      message.channel.send(
+        "2vs2 role have been set to" + twoRole
+      );
     }
     
   }
@@ -205,7 +226,19 @@ cupid.on("message", async message => {
       var team1Players = [player];
       createGameSql.run(mapName, mapCode, player, gameMode, gameType, playerCount, JSON.stringify(team1Players));
       console.log("Created new match " + mapCode);
-
+      
+      var mentionRole;
+      if (playerCount == 2 && gameType === "sync") {
+        mentionRole = oneRole;
+      } else if (playerCount == 4 && gameType === "sync") {
+        mentionRole = twoRole;
+      }
+      
+      var actualRole;
+      if (mentionRole) {
+        actualRole = message.guild.roles.find(role => role.name === "Moderators");
+      }
+      
       message.channel.send(
         "Your Game is created successfully, please wait for others to join your game."
       );
