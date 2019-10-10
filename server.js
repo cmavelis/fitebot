@@ -862,7 +862,7 @@ cupid.on("message", async message => {
       
       if (result === "abandon") {
         message.channel.send(
-          "The match " + mapCode + "was abandoned, no elo changes will be applied"
+          "The match " + mapCode + " was abandoned, no elo changes will be applied"
         );
         return;
       }
