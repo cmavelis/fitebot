@@ -87,7 +87,7 @@ cupid.on("message", async message => {
       
       prefix = newPrefix;
       message.channel.send(
-        "Prefix for the bot commands have been changed to" + prefix
+        "Prefix for the bot commands have been changed to " + prefix
       );
       return;
       
@@ -105,7 +105,7 @@ cupid.on("message", async message => {
       }
       oneRole = newRole;
       message.channel.send(
-        "1vs1 role have been set to" + oneRole
+        "1vs1 role have been set to " + oneRole
       );
     }
     
@@ -121,7 +121,7 @@ cupid.on("message", async message => {
       }
       twoRole = newRole;
       message.channel.send(
-        "2vs2 role have been set to" + twoRole
+        "2vs2 role have been set to " + twoRole
       );
     }
     
@@ -234,14 +234,109 @@ cupid.on("message", async message => {
         mentionRole = twoRole;
       }
       
-      var actualRole;
+      var createMessage = "Your Game is created successfully, please wait for others to join your game.";
       if (mentionRole) {
-        actualRole = message.guild.roles.find(role => role.name === "Moderators");
-      }
+        let actualRole = message.guild.roles.find(role => role.name === mentionRole);
+        if (actualRole) {
+          createMessage += "<@&" + actualRole.id + ">";
+        }
+      } 
       
+      message.channel.send(createMessage);
+    }
+  }
+  
+  if (command === "match") {
+    const mapCode = args[0];
+    
+    if (!mapCode || mapCode.length != 6) {
       message.channel.send(
-        "Your Game is created successfully, please wait for others to join your game."
+        "You must provide a valid game code. For more details, see " +
+          prefix +
+          "help match"
       );
+      return;
+    }
+    
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
+    
+    var targetMatch = getMatchSql.get(mapCode);
+    
+    if (targetMatch) {
+      var team1 = JSON.parse(targetMatch.team1Players);
+      var team2 = JSON.parse(targetMatch.team2Players);
+      var team3 = JSON.parse(targetMatch.team3Players);
+      var team4 = JSON.parse(targetMatch.team4Players);
+      
+      var gameStatus = targetMatch.gameStatus;
+      
+      var availGame = "```css\n" + targetMatch.mapName + " - " + targetMatch.mapCode + " - " + targetMatch.gameMode + " - " + targetMatch.gameType + " - players: " + Math.round(targetMatch.playerCount);
+
+      var team1 = JSON.parse(targetMatch.team1Players);
+      if (team1.length > 0) {
+        availGame += "\nTeam 1:"
+      }
+      team1.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
+
+        if (parseInt(targetMatch.playerCount) === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (parseInt(targetMatch.playerCount) === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+
+      var team2 = JSON.parse(targetMatch.team2Players);
+      if (team2.length > 0) {
+        availGame += "\nTeam 2:"
+      }
+      team2.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
+
+        if (parseInt(targetMatch.playerCount) === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (parseInt(targetMatch.playerCount) === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+      
+       var team3 = JSON.parse(targetMatch.team3Players);
+      if (team3.length > 0) {
+        availGame += "\nTeam 3:"
+      }
+      team3.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
+
+        if (parseInt(targetMatch.playerCount) === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (parseInt(targetMatch.playerCount) === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+      
+      var team4 = JSON.parse(targetMatch.team4Players);
+      if (team4.length > 0) {
+        availGame += "\nTeam 4:"
+      }
+      team4.forEach(function (player, index) {
+        var playerRow = getPlayerSql.get(player);
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
+
+        if (parseInt(targetMatch.playerCount) === 4) {
+          availGame += ": " + playerRow.elo2;
+        } else if (parseInt(targetMatch.playerCount) === 2) {
+          availGame += ": " + playerRow.elo1;
+        }
+      });
+      availGame += "\nGame Status: " + gameStatus;
+      availGame += "```";
+      message.channel.send(availGame);
+    } else {
+      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match. " + prefix + "join to join a game first")
     }
   }
   
