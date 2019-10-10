@@ -137,6 +137,36 @@ cupid.on("message", async message => {
       "Here are the common terms: https://youtu.be/OLnnjEEjDlE"
     );
   }
+  
+  if (command === "elo") {
+    
+    const player = message.author.id;
+    
+    let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
+    
+    const playerRow = getPlayerSql.get(player)
+    if (!playerRow) {
+      let newOwnerSql = db.prepare('INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)');
+      newOwnerSql.run(player);
+      console.log("Created new player " + player);
+      message.channel.send(
+        "<@" + player + "> Your 1vs1 ELO is 1000 and your 2vs2 ELO is 1000"
+      );
+    } else {
+      console.log(
+        "Player Exists " +
+          playerRow.player +
+          ", 1vs1 elo: " +
+          playerRow.elo1 +
+          ", 2vs2 elo: " +
+          playerRow.elo2
+      );
+      message.channel.send(
+        "<@" + player + "> Your 1vs1 ELO is " + Math.round(playerRow.elo1) + " and your 2vs2 ELO is " + Math.round(playerRow.elo2)
+      );
+    }
+    
+  }
 
   if (command === "create") {
     const mapName = args[0];
@@ -880,8 +910,8 @@ cupid.on("message", async message => {
           s1 = 0.5;
           s2 = 0.5;
         }
-        var newr1 = r1 + 32 * (s1 - e1);
-        var newr2 = r2 + 32 * (s2 - e2);
+        var newr1 = wData.elo1 + 32 * (s1 - e1);
+        var newr2 = lData.elo1 + 32 * (s2 - e2);
         updatePlayerELO1Sql.run(newr1, winner);
         updatePlayerELO1Sql.run(newr2, loser);
         
@@ -889,7 +919,7 @@ cupid.on("message", async message => {
         deleteMatchSql.run(mapCode);
         
         message.channel.send(
-          "The match " + mapCode + "is completed. Player elos have been updated, please use " + prefix + "elo to check your current elo"
+          "The match " + mapCode + " is completed. Player elos have been updated, please use " + prefix + "elo to check your current elo"
         );
         return;
       }
