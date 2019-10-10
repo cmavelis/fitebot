@@ -68,7 +68,7 @@ cupid.on("message", async message => {
     const gameMode = args[2] ? args[2] : "ranked";
     const playerCount = args[3] ? parseInt(args[3]) : 2;
     const gameType = args[4] ? args[4] : "sync";
-    const player = message.author.tag;
+    const player = message.author.id;
 
     if (!mapName || !mapCode) {
       message.channel.send(
@@ -202,11 +202,11 @@ cupid.on("message", async message => {
 
       var team1 = JSON.parse(row.team1Players);
       if (team1.length > 0) {
-        availGame += "\nTeam 1: \n"
+        availGame += "\nTeam 1:"
       }
       team1.forEach(function (player, index) {
         var playerRow = getPlayerSql.get(player);
-        availGame += playerRow.player;
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
@@ -217,11 +217,11 @@ cupid.on("message", async message => {
 
       var team2 = JSON.parse(row.team2Players);
       if (team2.length > 0) {
-        availGame += "\nTeam 2: \n"
+        availGame += "\nTeam 2:"
       }
       team2.forEach(function (player, index) {
         var playerRow = getPlayerSql.get(player);
-        availGame += playerRow.player;
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
@@ -232,11 +232,11 @@ cupid.on("message", async message => {
       
        var team3 = JSON.parse(row.team3Players);
       if (team3.length > 0) {
-        availGame += "\nTeam 3: \n"
+        availGame += "\nTeam 3:"
       }
       team3.forEach(function (player, index) {
         var playerRow = getPlayerSql.get(player);
-        availGame += playerRow.player;
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
@@ -247,11 +247,11 @@ cupid.on("message", async message => {
       
       var team4 = JSON.parse(row.team4Players);
       if (team4.length > 0) {
-        availGame += "\nTeam 4: \n"
+        availGame += "\nTeam 4:"
       }
       team4.forEach(function (player, index) {
         var playerRow = getPlayerSql.get(player);
-        availGame += playerRow.player;
+        availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (row.playerCount === 4) {
           availGame += ": " + playerRow.elo2;
@@ -286,6 +286,25 @@ cupid.on("message", async message => {
       return;
     }
     
+    // Check if the person creating the game is in our database, if not, create the player
+    let ownerExistSql = db.prepare('SELECT * FROM Players WHERE player = ?');
+    const player = message.author.id
+    const playerRow = ownerExistSql.get(player)
+    if (!playerRow) {
+      let newOwnerSql = db.prepare('INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)');
+      newOwnerSql.run(player);
+      console.log("Created new player " + player);
+    } else {
+      console.log(
+        "Player Exists " +
+          playerRow.player +
+          ", 1vs1 elo: " +
+          playerRow.elo1 +
+          ", 2vs2 elo: " +
+          playerRow.elo2
+      );
+    }
+    
     let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
     let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?, gameStatus = ? WHERE mapCode = ?');
     
@@ -297,7 +316,7 @@ cupid.on("message", async message => {
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
       
-      if (team1.includes(message.author.tag) || team2.includes(message.author.tag) || team3.includes(message.author.tag) || team4.includes(message.author.tag)) {
+      if (team1.includes(message.author.id) || team2.includes(message.author.id) || team3.includes(message.author.id) || team4.includes(message.author.id)) {
         message.channel.send("<@" + message.author.id + "> you are already in this game!")
         return;
       }
@@ -306,13 +325,13 @@ cupid.on("message", async message => {
       
       
       if (team === 1) {
-        team1.push(message.author.tag);
+        team1.push(message.author.id);
       } else if (team === 2) {
-        team2.push(message.author.tag);
+        team2.push(message.author.id);
       } else if (team === 3) {
-        team3.push(message.author.tag);
+        team3.push(message.author.id);
       } else if (team === 4) {
-        team4.push(message.author.tag);
+        team4.push(message.author.id);
       }
       
       var totalPlayers = team1.length + team2.length + team3.length + team4.length;
@@ -320,20 +339,20 @@ cupid.on("message", async message => {
       if (totalPlayers == targetMatch.playerCount) {
         gameStatus = "STARTED";
         var startMessage = "";
-        team1.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
+        team1.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
           startMessage += "<@" + player.id + ">"
         });
-        team2.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
+        team2.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
           startMessage += "<@" + player.id + ">"
         });
-        team3.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
+        team3.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
           startMessage += "<@" + player.id + ">"
         });
-        team4.forEach(function (playerTag, index) {
-          let player = cupid.users.find(playerObject => playerObject.tag == playerTag);
+        team4.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
           startMessage += "<@" + player.id + ">"
         });
         startMessage += " your game is ready on the map **" + targetMatch.mapName + "** with the match code: **" + targetMatch.mapCode + "**";
