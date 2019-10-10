@@ -60,6 +60,11 @@ cupid.on("message", async message => {
     const m = (Math.floor(Math.random() * 2) == 0) ? 'heads' : 'tails'
     message.channel.send("```" + message.author.username + " flipped a coin and got " + m + "```");
   }
+  
+  if (command === "flipCoin" || command === "fc" || command === "coin") {
+    const m = (Math.floor(Math.random() * 2) == 0) ? 'heads' : 'tails'
+    message.channel.send("```" + message.author.username + " flipped a coin and got " + m + "```");
+  }
 
   if (command === "term" || command === "terms") {
     message.channel.send(
@@ -168,7 +173,6 @@ cupid.on("message", async message => {
     const gameMode = args[2] && args[2] !== "any" ? args[2] : "%";
     const playerCount = args[3] && args[3] !== "any" ? parseInt(args[3]) : "%";
     
-    console.log(isNaN(playerCount));
     if ((!isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) || (isNaN(playerCount) && playerCount !== "%")) {
       message.channel.send(
         "You must provide a player count between 2 to 4. For more details, see " +
@@ -213,9 +217,9 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
-        if (row.playerCount === 4) {
+        if (parseInt(row.playerCount) === 4) {
           availGame += ": " + playerRow.elo2;
-        } else if (row.playerCount === 2) {
+        } else if (parseInt(row.playerCount) === 2) {
           availGame += ": " + playerRow.elo1;
         }
       });
@@ -228,9 +232,9 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
-        if (row.playerCount === 4) {
+        if (parseInt(row.playerCount) === 4) {
           availGame += ": " + playerRow.elo2;
-        } else if (row.playerCount === 2) {
+        } else if (parseInt(row.playerCount) === 2) {
           availGame += ": " + playerRow.elo1;
         }
       });
@@ -243,9 +247,9 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
-        if (row.playerCount === 4) {
+        if (parseInt(row.playerCount) === 4) {
           availGame += ": " + playerRow.elo2;
-        } else if (row.playerCount === 2) {
+        } else if (parseInt(row.playerCount) === 2) {
           availGame += ": " + playerRow.elo1;
         }
       });
@@ -258,9 +262,9 @@ cupid.on("message", async message => {
         var playerRow = getPlayerSql.get(player);
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
-        if (row.playerCount === 4) {
+        if (parseInt(row.playerCount) === 4) {
           availGame += ": " + playerRow.elo2;
-        } else if (row.playerCount === 2) {
+        } else if (parseInt(row.playerCount) === 2) {
           availGame += ": " + playerRow.elo1;
         }
       });
@@ -484,6 +488,15 @@ cupid.on("message", async message => {
       if (team3Index !== undefined) team3.splice(team3Index, 1);      
       const team4Index = team4.findIndex(x => x === message.author.id);
       if (team4Index !== undefined) team4.splice(team4Index, 1);
+      
+      if (team1.length == 0 && team2.length == 0 && team3.length == 0 && team4.length == 0) {
+        message.channel.send("```All players have left the game " + mapCode + ". The game will be deleted```");
+        let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode = ?');
+        deleteMatchSql.run(mapCode);
+      } else {  
+        let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?');
+        updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4));
+      }
       
     } else {
       message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match.");
