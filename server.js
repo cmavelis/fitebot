@@ -26,7 +26,7 @@ if (!exists) {
   console.log("New table matches created!");
   
   db.exec(
-    "CREATE TABLE Maps (mapName TEXT, mapCode TEXT, owner TEXT, playerCount TEXT, rating TEXT, officialRating TEXT)"
+    "CREATE TABLE Maps (mapName TEXT, mapCode TEXT, owner TEXT, playerCount TEXT, rating INT, ratingCount INT, officialRating TEXT)"
   );
   console.log("New table Maps created!");
 } else {
@@ -321,6 +321,11 @@ cupid.on("message", async message => {
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
       
+      if (team1.length + team2.length + team3.length + team4.length >= targetMatch.playerCount) {
+        message.channel.send("<@" + message.author.id + "> you are attempting to join a full game! Please try a different game.")
+        return;
+      }
+      
       if (team1.includes(message.author.id) || team2.includes(message.author.id) || team3.includes(message.author.id) || team4.includes(message.author.id)) {
         message.channel.send("<@" + message.author.id + "> you are already in this game!")
         return;
@@ -366,9 +371,93 @@ cupid.on("message", async message => {
       
       updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4), gameStatus, mapCode);
       
+    } else {
+      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match. " + prefix + "join to join a game first")
     }
   }
   
+  if (command === "swap" || command === "swapTeam") {
+    const mapCode = args[0];
+    const team = args[1] ? parseInt(args[1]) : 2;
+    
+    if (!mapCode || mapCode.length != 6) {
+      message.channel.send(
+        "You must provide a valid game code. For more details, see " +
+          prefix +
+          "help swap"
+      );
+      return;
+    }
+    if (team < 1 || team > 4) {
+      message.channel.send(
+        "You must provide a valid team. For more details, see " +
+          prefix +
+          "help swap"
+      );
+      return;
+    }
+    
+    
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?, gameStatus = ? WHERE mapCode = ?');
+    
+    var targetMatch = getMatchSql.get(mapCode);
+    
+    if (targetMatch) {
+      var team1 = JSON.parse(targetMatch.team1Players);
+      var team2 = JSON.parse(targetMatch.team2Players);
+      var team3 = JSON.parse(targetMatch.team3Players);
+      var team4 = JSON.parse(targetMatch.team4Players);
+      
+      if (!team1.includes(message.author.id) && !team2.includes(message.author.id) && !team3.includes(message.author.id) && !team4.includes(message.author.id)) {
+        message.channel.send("<@" + message.author.id + "> you are not in this game! Please use " + prefix + "join to join a game first")
+        return;
+      }
+      
+      message.channel.send("```" + message.author.username + " has swapped to team " + team + " in the game " + mapCode + "```");
+      
+      
+      if (team === 1) {
+        team1.push(message.author.id);
+      } else if (team === 2) {
+        team2.push(message.author.id);
+      } else if (team === 3) {
+        team3.push(message.author.id);
+      } else if (team === 4) {
+        team4.push(message.author.id);
+      }
+      
+      var totalPlayers = team1.length + team2.length + team3.length + team4.length;
+      var gameStatus = targetMatch.gameStatus;
+      if (totalPlayers == targetMatch.playerCount) {
+        gameStatus = "STARTED";
+        var startMessage = "";
+        team1.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
+          startMessage += "<@" + player.id + ">"
+        });
+        team2.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
+          startMessage += "<@" + player.id + ">"
+        });
+        team3.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
+          startMessage += "<@" + player.id + ">"
+        });
+        team4.forEach(function (playerId, index) {
+          let player = cupid.users.find(playerObject => playerObject.id == playerId);
+          startMessage += "<@" + player.id + ">"
+        });
+        startMessage += " your game is ready on the map **" + targetMatch.mapName + "** with the match code: **" + targetMatch.mapCode + "**";
+        message.channel.send(startMessage);
+      }
+      
+      updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4), gameStatus, mapCode);
+      
+    }else {
+      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match. " + prefix + "join to join a game first")
+    }
+  } 
   
 });
 
