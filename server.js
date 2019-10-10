@@ -312,9 +312,9 @@ cupid.on("message", async message => {
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (parseInt(targetMatch.playerCount) === 4) {
-          availGame += ": " + playerRow.elo2;
+          availGame += ": " + Math.round(playerRow.elo2);
         } else if (parseInt(targetMatch.playerCount) === 2) {
-          availGame += ": " + playerRow.elo1;
+          availGame += ": " + Math.round(playerRow.elo1);
         }
       });
 
@@ -327,9 +327,9 @@ cupid.on("message", async message => {
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (parseInt(targetMatch.playerCount) === 4) {
-          availGame += ": " + playerRow.elo2;
+          availGame += ": " + Math.round(playerRow.elo2);
         } else if (parseInt(targetMatch.playerCount) === 2) {
-          availGame += ": " + playerRow.elo1;
+          availGame += ": " + Math.round(playerRow.elo1);
         }
       });
       
@@ -342,9 +342,9 @@ cupid.on("message", async message => {
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (parseInt(targetMatch.playerCount) === 4) {
-          availGame += ": " + playerRow.elo2;
+          availGame += ": " + Math.round(playerRow.elo2);
         } else if (parseInt(targetMatch.playerCount) === 2) {
-          availGame += ": " + playerRow.elo1;
+          availGame += ": " + Math.round(playerRow.elo1);
         }
       });
       
@@ -357,9 +357,9 @@ cupid.on("message", async message => {
         availGame += "\n" + cupid.users.find(playerObject => playerObject.id == playerRow.player).tag;
 
         if (parseInt(targetMatch.playerCount) === 4) {
-          availGame += ": " + playerRow.elo2;
+          availGame += ": " + Math.round(playerRow.elo2);
         } else if (parseInt(targetMatch.playerCount) === 2) {
-          availGame += ": " + playerRow.elo1;
+          availGame += ": " + Math.round(playerRow.elo1);
         }
       });
       availGame += "\nGame Status: " + gameStatus;
