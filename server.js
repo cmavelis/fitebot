@@ -390,7 +390,7 @@ cupid.on("message", async message => {
     }
     if (team < 1 || team > 4) {
       message.channel.send(
-        "You must provide a valid team. For more details, see " +
+        "You must provide a valid team bewteen 1 to 4. For more details, see " +
           prefix +
           "help swap"
       );
@@ -399,7 +399,7 @@ cupid.on("message", async message => {
     
     
     let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
-    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?, gameStatus = ? WHERE mapCode = ?');
+    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?');
     
     var targetMatch = getMatchSql.get(mapCode);
     
@@ -416,6 +416,14 @@ cupid.on("message", async message => {
       
       message.channel.send("```" + message.author.username + " has swapped to team " + team + " in the game " + mapCode + "```");
       
+      const team1Index = team1.findIndex(x => x === message.author.id);
+      if (team1Index !== undefined) team1.splice(team1Index, 1);      
+      const team2Index = team2.findIndex(x => x === message.author.id);
+      if (team2Index !== undefined) team2.splice(team2Index, 1);      
+      const team3Index = team3.findIndex(x => x === message.author.id);
+      if (team3Index !== undefined) team3.splice(team3Index, 1);      
+      const team4Index = team4.findIndex(x => x === message.author.id);
+      if (team4Index !== undefined) team4.splice(team4Index, 1);
       
       if (team === 1) {
         team1.push(message.author.id);
@@ -427,37 +435,61 @@ cupid.on("message", async message => {
         team4.push(message.author.id);
       }
       
-      var totalPlayers = team1.length + team2.length + team3.length + team4.length;
-      var gameStatus = targetMatch.gameStatus;
-      if (totalPlayers == targetMatch.playerCount) {
-        gameStatus = "STARTED";
-        var startMessage = "";
-        team1.forEach(function (playerId, index) {
-          let player = cupid.users.find(playerObject => playerObject.id == playerId);
-          startMessage += "<@" + player.id + ">"
-        });
-        team2.forEach(function (playerId, index) {
-          let player = cupid.users.find(playerObject => playerObject.id == playerId);
-          startMessage += "<@" + player.id + ">"
-        });
-        team3.forEach(function (playerId, index) {
-          let player = cupid.users.find(playerObject => playerObject.id == playerId);
-          startMessage += "<@" + player.id + ">"
-        });
-        team4.forEach(function (playerId, index) {
-          let player = cupid.users.find(playerObject => playerObject.id == playerId);
-          startMessage += "<@" + player.id + ">"
-        });
-        startMessage += " your game is ready on the map **" + targetMatch.mapName + "** with the match code: **" + targetMatch.mapCode + "**";
-        message.channel.send(startMessage);
-      }
+      updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4));
       
-      updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4), gameStatus, mapCode);
-      
-    }else {
-      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match. " + prefix + "join to join a game first")
+    } else {
+      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match.")
     }
   } 
+  
+  if (command === "leave") {
+    const mapCode = args[0];
+    
+    if (!mapCode || mapCode.length != 6) {
+      message.channel.send(
+        "You must provide a valid game code. For more details, see " +
+          prefix +
+          "help leave"
+      );
+      return;
+    }
+    
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    
+    var targetMatch = getMatchSql.get(mapCode);
+    
+    if (targetMatch) {
+      if (targetMatch.gameStatus == "STARTED") {
+        message.channel.send("<@" + message.author.id + "> the match is currently in session. Please use " + prefix + "conclude to end the game.");
+        return;
+      }
+      
+      var team1 = JSON.parse(targetMatch.team1Players);
+      var team2 = JSON.parse(targetMatch.team2Players);
+      var team3 = JSON.parse(targetMatch.team3Players);
+      var team4 = JSON.parse(targetMatch.team4Players);
+      
+      if (!team1.includes(message.author.id) && !team2.includes(message.author.id) && !team3.includes(message.author.id) && !team4.includes(message.author.id)) {
+        message.channel.send("<@" + message.author.id + "> you are not in this game!")
+        return;
+      }
+      
+      message.channel.send("```" + message.author.username + " has left the game " + mapCode + ".```");
+      
+      const team1Index = team1.findIndex(x => x === message.author.id);
+      if (team1Index !== undefined) team1.splice(team1Index, 1);      
+      const team2Index = team2.findIndex(x => x === message.author.id);
+      if (team2Index !== undefined) team2.splice(team2Index, 1);      
+      const team3Index = team3.findIndex(x => x === message.author.id);
+      if (team3Index !== undefined) team3.splice(team3Index, 1);      
+      const team4Index = team4.findIndex(x => x === message.author.id);
+      if (team4Index !== undefined) team4.splice(team4Index, 1);
+      
+    } else {
+      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match.");
+    }
+    
+  }
   
 });
 
