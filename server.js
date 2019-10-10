@@ -56,9 +56,44 @@ cupid.on("message", async message => {
     );
   }
   
-  if (command === "flipCoin" || command === "fc" || command === "coin") {
-    const m = (Math.floor(Math.random() * 2) == 0) ? 'heads' : 'tails'
-    message.channel.send("```" + message.author.username + " flipped a coin and got " + m + "```");
+  if (command === "setting") {
+    const subSetting = args[0];
+    if (!subSetting) {
+      message.channel.send(
+        "You must provide a setting name. For more details, see " +
+          prefix +
+          "help setting"
+      );
+      return;
+    }
+    
+    if (subSetting === "prefix") {
+      const newPrefix = args[1];
+      if (!newPrefix) {
+        message.channel.send(
+          "You must provide a valid prefix. For more details, see " +
+            prefix +
+            "help setting prefix"
+        );
+        return;
+      }
+      
+      prefix = newPrefix;
+    }
+    
+    if (subSetting === "1v1Role") {
+      const newRole = args[1];
+      if (!newRole) {
+        message.channel.send(
+          "You must provide a valid role. For more details, see " +
+            prefix +
+            "help setting 1v1Role"
+        );
+        return;
+      }
+      
+    }
+    
   }
   
   if (command === "flipCoin" || command === "fc" || command === "coin") {
