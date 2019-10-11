@@ -855,6 +855,9 @@ cupid.on("message", async message => {
     var targetMatch = getMatchSql.get(mapCode);
     
     if (targetMatch) {
+      let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode = ?');
+      deleteMatchSql.run(mapCode);
+      
       if (targetMatch.gameMode === "unranked") {
         message.channel.send("concluded an unranked game " + mapCode);
         return;
@@ -914,9 +917,6 @@ cupid.on("message", async message => {
         var newr2 = lData.elo1 + 32 * (s2 - e2);
         updatePlayerELO1Sql.run(newr1, winner);
         updatePlayerELO1Sql.run(newr2, loser);
-        
-        let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode = ?');
-        deleteMatchSql.run(mapCode);
         
         message.channel.send(
           "The match " + mapCode + " is completed. Player elos have been updated, please use " + prefix + "elo to check your current elo"
