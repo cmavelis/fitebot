@@ -49,6 +49,10 @@ cupid.on("message", async message => {
     .trim()
     .split(/ +/g);
   const command = args.shift().toLowerCase();
+  
+  if (command === "help") {
+    
+  }
 
   if (command === "ping") {
     const m = await message.channel.send("Ping?");
