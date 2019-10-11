@@ -85,11 +85,11 @@ cupid.on("message", async message => {
           },
           {
             "name": "`$create`",
-            "value": "Creates a new game."
+            "value": "Creates a new game"
           },
           {
             "name": "`$games`",
-            "value": "Lists all games that are looking for more player."
+            "value": "Lists all games that are looking for more players"
           },
           {
             "name": "`$ongoing`",
