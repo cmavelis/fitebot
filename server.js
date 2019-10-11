@@ -89,7 +89,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "`$games`",
-            "value": "Lists all games that are looking for playe."
+            "value": "Lists all games that are looking for more player."
           },
           {
             "name": "`$ongoing`",
@@ -118,6 +118,7 @@ cupid.on("message", async message => {
         ]
       };
       message.channel.send({ embed });
+      return;
     }
     
     if (args[0] === "help") {
