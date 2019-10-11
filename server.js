@@ -646,7 +646,7 @@ cupid.on("message", async message => {
 
     // Check if the game exists
     var isGameExist = true;
-    let gameExistSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let gameExistSql = db.prepare('SELECT * FROM Matches WHERE mapCode LIKE ?');
     const gameRow = gameExistSql.get(mapCode);
     if (gameRow) {
       message.channel.send(
@@ -692,7 +692,7 @@ cupid.on("message", async message => {
       return;
     }
     
-    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode LIKE ?');
     let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
     
     var targetMatch = getMatchSql.get(mapCode);
@@ -1028,8 +1028,8 @@ cupid.on("message", async message => {
       );
     }
     
-    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
-    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?, gameStatus = ? WHERE mapCode = ?');
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode LIKE ?');
+    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?, gameStatus = ? WHERE mapCode LIKE ?');
     
     var targetMatch = getMatchSql.get(mapCode);
     
@@ -1116,8 +1116,8 @@ cupid.on("message", async message => {
     }
     
     
-    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
-    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?');
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode LIKE ?');
+    let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ? WHERE mapCode LIKE ?');
     
     var targetMatch = getMatchSql.get(mapCode);
     
@@ -1153,7 +1153,7 @@ cupid.on("message", async message => {
         team4.push(message.author.id);
       }
       
-      updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4));
+      updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4), mapCode);
       
     } else {
       message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match.")
@@ -1172,7 +1172,7 @@ cupid.on("message", async message => {
       return;
     }
     
-    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode LIKE ?');
     
     var targetMatch = getMatchSql.get(mapCode);
     
@@ -1205,11 +1205,11 @@ cupid.on("message", async message => {
       
       if (team1.length == 0 && team2.length == 0 && team3.length == 0 && team4.length == 0) {
         message.channel.send("```All players have left the game " + mapCode + ". The game will be deleted```");
-        let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode = ?');
+        let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode LIKE ?');
         deleteMatchSql.run(mapCode);
       } else {  
-        let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ?');
-        updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4));
+        let updateMatchSql = db.prepare('UPDATE Matches SET team1Players = ?, team2Players = ?, team3Players = ?, team4Players = ? WHERE mapCode LIKE ?');
+        updateMatchSql.run(JSON.stringify(team1), JSON.stringify(team2), JSON.stringify(team3), JSON.stringify(team4), mapCode);
       }
       
     } else {
@@ -1251,7 +1251,7 @@ cupid.on("message", async message => {
       return;
     }
     
-    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode = ?');
+    let getMatchSql = db.prepare('SELECT * FROM Matches WHERE mapCode LIKE ?');
     let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
     let updatePlayerELO1Sql = db.prepare('UPDATE Players SET elo1 = ? WHERE player = ?');
     let updatePlayerELO2Sql = db.prepare('UPDATE Players SET elo2 = ? WHERE player = ?');
@@ -1259,7 +1259,7 @@ cupid.on("message", async message => {
     var targetMatch = getMatchSql.get(mapCode);
     
     if (targetMatch) {
-      let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode = ?');
+      let deleteMatchSql = db.prepare('DELETE FROM matches WHERE mapCode LIKE ?');
       deleteMatchSql.run(mapCode);
       
       if (targetMatch.gameMode === "unranked") {
