@@ -51,7 +51,82 @@ cupid.on("message", async message => {
   const command = args.shift().toLowerCase();
   
   if (command === "help") {
+    if (args.length == 0) {
+      const embed = {
+        "description": "Hello there! This bot is used to faciliate matchmaking process and track player elo. Please see below for the available commands.\n\nI am currently under development. If you have encountered any errors, please ping @Ophelia.1413",
+        "color": 7647991,
+        "footer": {
+          "text": "Type $help <command> for more info on a command."
+        },
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "`$help`",
+            "value": "Shows this help message"
+          },
+          {
+            "name": "`$ping`",
+            "value": "replys pong and the bot latency"
+          },
+          {
+            "name": "`$coin`",
+            "value": "Flips a coin. Could be heads or tails"
+          },
+          {
+            "name": "`$coin`",
+            "value": "Flips a coin. Could be heads or tails"
+          },
+          {
+            "name": "`$term or $terms`",
+            "value": "Link to a common wargroove terms video"
+          },
+          {
+            "name": "`$elo`",
+            "value": "Shows a player's current 1vs1 and 2vs2 elo"
+          },
+          {
+            "name": "`$create`",
+            "value": "Creates a new game."
+          },
+          {
+            "name": "`$games`",
+            "value": "Lists all games that are looking for playe."
+          },
+          {
+            "name": "`$ongoing`",
+            "value": "Lists all games that have been filled and is currently in session"
+          },
+          {
+            "name": "`$join`",
+            "value": "Joins a game"
+          },
+          {
+            "name": "`$swap`",
+            "value": "Swaps to a different team in a selected match"
+          },
+          {
+            "name": "`$leave`",
+            "value": "Leave a selected match"
+          },
+          {
+            "name": "`$match`",
+            "value": "Displays the details of a particular match"
+          },
+          {
+            "name": "`$conclude`",
+            "value": "Ends a match and updates player elo if it's a ranked 1vs1 game or ranked 2vs2 game based on the match result"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    }
     
+    if (args[0] === "help") {
+      
+    }
   }
 
   if (command === "ping") {
@@ -1036,6 +1111,9 @@ cupid.on("message", async message => {
         return;
       }
       
+      message.channel.send(
+        "The match " + mapCode + " doesn't have a valid team set up. Game is concluded without elo changes."
+      );
       
     } else {
       message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match.");
