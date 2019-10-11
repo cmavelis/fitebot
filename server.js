@@ -415,7 +415,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "Arguments",
-            "value": "__**match code**__(required): The lobby code of the game you want to end\n__**result**__(required): draw, abandon, or win. Abandon will not update the elo, draw and win will update player's elo accordingly\n__**team**__(required only if result is win): The team that won the game."
+            "value": "__**match code**__(required): The lobby code of the game you want to end\n__**result**__(required): draw, abandon, or win. Abandon will not update the elo, draw and win will update player's elo accordingly\n__**team**__(required only if result is win): The team that won the game"
           }
         ]
       };
