@@ -245,15 +245,38 @@ cupid.on("message", async message => {
         "fields": [
           {
             "name": "Syntax",
-            "value": "$elo [player]"
+            "value": "$create [map name] [match code] [game mode] [player count] [game type]"
           },
           {
             "name": "Description",
-            "value": "Replies with your current 1vs1 elo and your 2vs2 elo"
+            "value": "Creates a new game in the database and ping @LFM if it's a synchronous game"
           },
           {
             "name": "Arguments",
-            "value": "**player**(optional): If a player is provided, then it will reply with the elo of that player"
+            "value": "**map name**(required): Name of the map\n**match code**(required): The lobby code\n**game mode**(optional): ranked or unranked. Ranked mode will affect your elo after the game is over. Unranked will not. Defaults to Ranked mode\n__**player count**__(optional): Number of players that needs to join the game before the game will start. Can be 2, 3, or 4. Defaults to 2\n__**game type**__(optional): async or sync. Defaults to sync"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "games") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$create [map name] [match code] [game mode] [player count] [game type]"
+          },
+          {
+            "name": "Description",
+            "value": "Creates a new game in the database and ping @LFM if it's a synchronous game"
+          },
+          {
+            "name": "Arguments",
+            "value": "**map name**(required): Name of the map\n**match code**(required): The lobby code\n**game mode**(optional): ranked or unranked. Ranked mode will affect your elo after the game is over. Unranked will not. Defaults to Ranked mode\n__**player count**__(optional): Number of players that needs to join the game before the game will start. Can be 2, 3, or 4. Defaults to 2\n__**game type**__(optional): async or sync. Defaults to sync"
           }
         ]
       };
@@ -376,7 +399,7 @@ cupid.on("message", async message => {
       let newOwnerSql = db.prepare('INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)');
       newOwnerSql.run(player);
       console.log("Created new player " + player);
-      if (args[0]) {
+      if (!args[0]) {
         message.channel.send(
           "<@" + player + "> Your 1vs1 ELO is 1000 and your 2vs2 ELO is 1000"
         );
@@ -394,9 +417,16 @@ cupid.on("message", async message => {
           ", 2vs2 elo: " +
           playerRow.elo2
       );
-      message.channel.send(
-        "<@" + player + "> Your 1vs1 ELO is " + Math.round(playerRow.elo1) + " and your 2vs2 ELO is " + Math.round(playerRow.elo2)
-      );
+      if (!args[0]) {
+        message.channel.send(
+          "<@" + player + "> Your 1vs1 ELO is " + Math.round(playerRow.elo1) + " and your 2vs2 ELO is " + Math.round(playerRow.elo2)
+        );
+      } else {
+        message.channel.send(
+          
+          "<@" + message.author.id + "> "+ args[0] + "'s 1vs1 ELO is " + Math.round(playerRow.elo1) + " and your 2vs2 ELO is " + Math.round(playerRow.elo2)
+        );
+      }
     }
     
   }
