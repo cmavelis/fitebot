@@ -76,11 +76,7 @@ cupid.on("message", async message => {
             "value": "Flips a coin. Could be heads or tails"
           },
           {
-            "name": "`$coin`",
-            "value": "Flips a coin. Could be heads or tails"
-          },
-          {
-            "name": "`$term or $terms`",
+            "name": "`$terms`",
             "value": "Link to a common wargroove terms video"
           },
           {
@@ -125,8 +121,100 @@ cupid.on("message", async message => {
     }
     
     if (args[0] === "help") {
-      
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$help [command]"
+          },
+          {
+            "name": "Description",
+            "value": "Displays manual on how to use the bot"
+          },
+          {
+            "name": "Arguments",
+            "value": "**command**(optional): If an command is provided, it will provide instructions on how to use that command"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "ping") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$ping"
+          },
+          {
+            "name": "Description",
+            "value": "Replys \"Pong\" and the latency to reply"
+          },
+          {
+            "name": "Arguments",
+            "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "coin") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$coin"
+          },
+          {
+            "name": "Description",
+            "value": "Tosses a coin, the result will either be heads or tails"
+          },
+          {
+            "name": "Arguments",
+            "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    }else if (args[0] === "coin") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$coin"
+          },
+          {
+            "name": "Description",
+            "value": "Tosses a coin, the result will either be heads or tails"
+          },
+          {
+            "name": "Arguments",
+            "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
     }
+    
+    
   }
 
   if (command === "ping") {
