@@ -875,6 +875,20 @@ cupid.on("message", async message => {
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
       
+      if (team1.length + team2.length + team3.length + team4.length == 3) {
+        message.channel.send(
+          "The match " + mapCode + " was a 3 player map. No elo will be updated for this type of games."
+        );
+        return;
+      }
+      
+      if (team1.length + team2.length + team3.length + team4.length == 4) {
+        message.channel.send(
+          "The match " + mapCode + " was a 3 player map. No elo will be updated for this type of games."
+        );
+        return;
+      }
+      
       if (team1.length + team2.length + team3.length + team4.length == 2 && team1.length <= 1 && team2.length <= 1 && team3.length <= 1 && team4.length <= 1) {
         var winner;
         var loser;
