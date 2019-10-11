@@ -53,7 +53,7 @@ cupid.on("message", async message => {
   if (command === "help") {
     if (args.length == 0) {
       const embed = {
-        "description": "Hello there! This bot is used to faciliate matchmaking process and track player elo. Please see below for the available commands.\n\nI am currently under development. If you have encountered any errors, please ping @Ophelia.1413",
+        "description": "Hello there! This bot is used to faciliate matchmaking process and track player elo. Please see below for the available commands.\n\nI am currently under development. If you have encountered any errors, please ping @Ophelia#1413",
         "color": 7647991,
         "footer": {
           "text": "Type $help <command> for more info on a command."
