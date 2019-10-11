@@ -138,7 +138,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "Arguments",
-            "value": "**command**(optional): If an command is provided, it will provide instructions on how to use that command"
+            "value": "__**command**__(optional): If an command is provided, it will provide instructions on how to use that command"
           }
         ]
       };
@@ -230,7 +230,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "Arguments",
-            "value": "**player**(optional): If a player is provided, then it will reply with the elo of that player"
+            "value": "__**player**__(optional): If a player is provided, then it will reply with the elo of that player"
           }
         ]
       };
@@ -253,7 +253,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "Arguments",
-            "value": "**map name**(required): Name of the map\n**match code**(required): The lobby code\n**game mode**(optional): ranked or unranked. Ranked mode will affect your elo after the game is over. Unranked will not. Defaults to Ranked mode\n__**player count**__(optional): Number of players that needs to join the game before the game will start. Can be 2, 3, or 4. Defaults to 2\n__**game type**__(optional): async or sync. Defaults to sync"
+            "value": "__**map name**__(required): Name of the map\n__**match code**__(required): The lobby code\n**game mode**(optional): ranked or unranked. Ranked mode will affect your elo after the game is over. Unranked will not. Defaults to Ranked mode\n__**player count**__(optional): Number of players that needs to join the game before the game will start. Can be 2, 3, or 4. Defaults to 2\n__**game type**__(optional): async or sync. Defaults to sync"
           }
         ]
       };
@@ -268,19 +268,159 @@ cupid.on("message", async message => {
         "fields": [
           {
             "name": "Syntax",
-            "value": "$create [map name] [match code] [game mode] [player count] [game type]"
+            "value": "$games [map name] [game type] [game mode] [player count] "
           },
           {
             "name": "Description",
-            "value": "Creates a new game in the database and ping @LFM if it's a synchronous game"
+            "value": "Searches for all available game that is looking for more players based on the options"
           },
           {
             "name": "Arguments",
-            "value": "**map name**(required): Name of the map\n**match code**(required): The lobby code\n**game mode**(optional): ranked or unranked. Ranked mode will affect your elo after the game is over. Unranked will not. Defaults to Ranked mode\n__**player count**__(optional): Number of players that needs to join the game before the game will start. Can be 2, 3, or 4. Defaults to 2\n__**game type**__(optional): async or sync. Defaults to sync"
+            "value": "__**map name**__(optional): Name of the map. Defaults to any\n__**game type**__(optional): async or sync. Defaults to any\n__**game mode**__(optional): ranked or unranked. Defaults to any\n__**player count**__(optional): Number of players on the map. Can be 2, 3, or 4. Defaults to any"
           }
         ]
       };
       message.channel.send({ embed });
+    } else if (args[0] === "ongoing") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$ongoing [map name] [game type] [game mode] [player count] "
+          },
+          {
+            "name": "Description",
+            "value": "Searches for all game that is currently filled and is being played"
+          },
+          {
+            "name": "Arguments",
+            "value": "__**map name**__(optional): Name of the map. Defaults to any\n__**game type**__(optional): async or sync. Defaults to any\n__**game mode**__(optional): ranked or unranked. Defaults to any\n__**player count**__(optional): Number of players on the map. Can be 2, 3, or 4. Defaults to any"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "join") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$join [match code] [team] "
+          },
+          {
+            "name": "Description",
+            "value": "Joins an open game that is currently looking for more players"
+          },
+          {
+            "name": "Arguments",
+            "value": "__**match code**__(required): The lobby code of the game you want to join\n__**team**__(optional): The team you want to be on. Can be 1, 2, 3, or 4. Defaults to 2"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "swap") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$swap [match code] [team] "
+          },
+          {
+            "name": "Description",
+            "value": "Swaps to a different team in a match you are in"
+          },
+          {
+            "name": "Arguments",
+            "value": "__**match code**__(required): The lobby code of the game you want to swap the team on\n__**team**__(optional): The team you want to be on. Can be 1, 2, 3, or 4. Defaults to 2"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "leave") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$leave [match code]"
+          },
+          {
+            "name": "Description",
+            "value": "Leave a match. If you are the last person in the match before you leave, the match will be deleted after you leave"
+          },
+          {
+            "name": "Arguments",
+            "value": "__**match code**__(required): The lobby code of the game you want to leave from"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "match") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$match [match code]"
+          },
+          {
+            "name": "Description",
+            "value": "Shows you the details of a particular match"
+          },
+          {
+            "name": "Arguments",
+            "value": "__**match code**__(required): The lobby code of the game you want more details on"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "conclude") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$conclude [match code] [result] [team]"
+          },
+          {
+            "name": "Description",
+            "value": "Ends a match and updates the player elo if it's a valid ranked match"
+          },
+          {
+            "name": "Arguments",
+            "value": "__**match code**__(required): The lobby code of the game you want to end\n__**result**__(required): draw, abandon, or win. Abandon will not update the elo, draw and win will update player's elo accordingly\n__**team**__(required only if result is win): The team that won the game."
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else {
+      message.channel.send("Invalid command recevied, please use " + prefix + "help to see available commands");
     }
     
     
