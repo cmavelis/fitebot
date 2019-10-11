@@ -883,10 +883,83 @@ cupid.on("message", async message => {
       }
       
       if (team1.length + team2.length + team3.length + team4.length == 4) {
+        var winner;
+        var loser;
+        
+        if (result === "win" && team === "1") {
+          winner = team1;
+          loser = team2.length > 0 ? team2 : team3.length > 0 ? team3 : team4;
+        } else if (result === "win" && team === "2") {
+          winner = team2;
+          loser = team1.length > 0 ? team1 : team3.length > 0 ? team3 : team4;
+        } else if (result === "win" && team === "3") {
+          winner = team3;
+          loser = team1.length > 0 ? team1 : team2.length > 0 ? team2 : team4;
+        } else if (result === "win" && team === "4") {
+          winner = team4;
+          loser = team1.length > 0 ? team1 : team2.length > 0 ? team2 : team3;
+        } else {
+          winner = team1.length == 2 ? team1 : team2.length == 2 ? team2 : team3;
+          loser = team4.length == 2 ? team4 : team3.length == 2 ? team3 : team2;
+        }
+        
+        if (winner.length != 2 && winner.length != 2) {
+          message.channel.send(
+            "The match " + mapCode + " was a not a 2v2 game. No elo will be updated for this type of games."
+          );
+          return;
+        }
+        
+        var winner1 = winner.pop();
+        var winner2 = winner.pop();
+        var loser1 = loser.pop();
+        var loser2 = loser.pop();
+        
+        
+        let player1Name = cupid.users.find(playerObject => playerObject.id == winner1).username;
+        let player2Name = cupid.users.find(playerObject => playerObject.id == winner2).username;
+        let player3Name = cupid.users.find(playerObject => playerObject.id == loser1).username;
+        let player4Name = cupid.users.find(playerObject => playerObject.id == loser2).username;
+        
+        var w1Data = getPlayerSql.get(winner1);
+        var w2Data = getPlayerSql.get(winner2);
+        var l1Data = getPlayerSql.get(loser1);
+        var l2Data = getPlayerSql.get(loser2);
+        
+        var team1Avg = (w1Data.elo2 + w2Data.elo2)/2;
+        var team2Avg = (l1Data.elo2 + l2Data.elo2)/2
+        
+        var r1 = Math.pow(10, team1Avg / 400);
+        var r2 = Math.pow(10, team2Avg / 400);
+        
+        var e1 = r1 / (r1 + r2);
+        var e2 = r2 / (r1 + r2);
+        
+        var s1;
+        var s2;
+        if (result == "win") {
+          s1 = 1;
+          s2 = 0;
+        } else {
+          s1 = 0.5;
+          s2 = 0.5;
+        }
+        var newr1 = w1Data.elo1 + 32 * (s1 - e1);
+        var newr2 = w2Data.elo1 + 32 * (s2 - e2);
+        var newr3 = l1Data.elo1 + 32 * (s1 - e1);
+        var newr4 = l2Data.elo1 + 32 * (s2 - e2);
+        updatePlayerELO1Sql.run(newr1, winner1);
+        updatePlayerELO1Sql.run(newr2, winner2);
+        updatePlayerELO1Sql.run(newr3, loser1);
+        updatePlayerELO1Sql.run(newr4, loser1);
+        
         message.channel.send(
-          "The match " + mapCode + " was a 3 player map. No elo will be updated for this type of games."
+          "```The match " + mapCode + " is completed.\nELO changes:\n" +
+          player1Name + ": " 32 * (s1 - e1);
+          + "please use " + prefix + "elo to check your new elo```"
         );
         return;
+        
       }
       
       if (team1.length + team2.length + team3.length + team4.length == 2 && team1.length <= 1 && team2.length <= 1 && team3.length <= 1 && team4.length <= 1) {
