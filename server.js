@@ -189,7 +189,7 @@ cupid.on("message", async message => {
         ]
       };
       message.channel.send({ embed });
-    }else if (args[0] === "coin") {
+    } else if (args[0] === "terms") {
       const embed = {
         "color": 7647991,
         "author": {
@@ -199,15 +199,61 @@ cupid.on("message", async message => {
         "fields": [
           {
             "name": "Syntax",
-            "value": "$coin"
+            "value": "$terms"
           },
           {
             "name": "Description",
-            "value": "Tosses a coin, the result will either be heads or tails"
+            "value": "Replies with the Competitive Wargroove Terms videos"
           },
           {
             "name": "Arguments",
             "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "elo") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$elo [player]"
+          },
+          {
+            "name": "Description",
+            "value": "Replies with your current 1vs1 elo and your 2vs2 elo"
+          },
+          {
+            "name": "Arguments",
+            "value": "**player**(optional): If a player is provided, then it will reply with the elo of that player"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "create") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$elo [player]"
+          },
+          {
+            "name": "Description",
+            "value": "Replies with your current 1vs1 elo and your 2vs2 elo"
+          },
+          {
+            "name": "Arguments",
+            "value": "**player**(optional): If a player is provided, then it will reply with the elo of that player"
           }
         ]
       };
@@ -307,7 +353,21 @@ cupid.on("message", async message => {
   
   if (command === "elo") {
     
-    const player = message.author.id;
+    var player;
+    
+    if (args[0]) {
+      var playerObj = cupid.users.find(playerObject => playerObject.tag == args[0]);
+      if (playerObj) {
+        player = playerObj.id;
+      } else {
+        message.channel.send(
+          "player " + args[0] + " does not exist. Please check your spelling and try again"
+        );
+        return;
+      }
+    } else {
+      player = message.author.id;
+    }
     
     let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
     
@@ -316,9 +376,15 @@ cupid.on("message", async message => {
       let newOwnerSql = db.prepare('INSERT INTO Players(player, elo1, elo2) VALUES(?, 1000, 1000)');
       newOwnerSql.run(player);
       console.log("Created new player " + player);
-      message.channel.send(
-        "<@" + player + "> Your 1vs1 ELO is 1000 and your 2vs2 ELO is 1000"
-      );
+      if (args[0]) {
+        message.channel.send(
+          "<@" + player + "> Your 1vs1 ELO is 1000 and your 2vs2 ELO is 1000"
+        );
+      } else {
+        message.channel.send(
+          "<@" + message.author.id + "> " + args[0] + "'s 1vs1 ELO is 1000 and your 2vs2 ELO is 1000"
+        );
+      }
     } else {
       console.log(
         "Player Exists " +
