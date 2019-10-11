@@ -246,9 +246,9 @@ cupid.on("message", async message => {
     const gameRow = gameExistSql.get(mapCode);
     if (gameRow) {
       message.channel.send(
-        "Game already created. To close a game, use " +
+        "Game already created. To leave a game, use " +
           prefix +
-          "end <gameCode>. For more details, see help end"
+          "leave <gameCode>. For more details, see " + prefix + "help leave"
       );
     } else {
       // Create the Game
