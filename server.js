@@ -875,6 +875,13 @@ cupid.on("message", async message => {
       var team3 = JSON.parse(targetMatch.team3Players);
       var team4 = JSON.parse(targetMatch.team4Players);
       
+      if (!team1.includes(message.author.id) && !team2.includes(message.author.id) && !team2.includes(message.author.id) && !team2.includes(message.author.id) && !message.member.hasPermission('ADMINISTRATOR')) {
+        message.channel.send(
+          "<@" + message.author.id + "> The match can only be ended by the players or an admin. You don't have permission to end this match."
+        );
+        return;
+      }
+      
       if (team1.length + team2.length + team3.length + team4.length == 3) {
         message.channel.send(
           "The match " + mapCode + " was a 3 player map. No elo will be updated for this type of games."
@@ -944,9 +951,11 @@ cupid.on("message", async message => {
           s1 = 0.5;
           s2 = 0.5;
         }
+        var winnderDiff = 32 * (s1 - e1);
+        var loserDiff = 32 * (s2 - e2);
         var newr1 = w1Data.elo1 + 32 * (s1 - e1);
-        var newr2 = w2Data.elo1 + 32 * (s2 - e2);
-        var newr3 = l1Data.elo1 + 32 * (s1 - e1);
+        var newr2 = w2Data.elo1 + 32 * (s1 - e2);
+        var newr3 = l1Data.elo1 + 32 * (s2 - e2);
         var newr4 = l2Data.elo1 + 32 * (s2 - e2);
         updatePlayerELO1Sql.run(newr1, winner1);
         updatePlayerELO1Sql.run(newr2, winner2);
@@ -954,9 +963,12 @@ cupid.on("message", async message => {
         updatePlayerELO1Sql.run(newr4, loser1);
         
         message.channel.send(
-          "```The match " + mapCode + " is completed.\nELO changes:\n" +
-          player1Name + ": " 32 * (s1 - e1);
-          + "please use " + prefix + "elo to check your new elo```"
+          "```The match " + mapCode + " is completed.\nELO changes:\n\n" +
+          player1Name + ": " + Math.round(winnderDiff) + "\n" +
+          player2Name + ": " + Math.round(winnderDiff) + "\n" +
+          player3Name + ": " + Math.round(loserDiff) + "\n" +
+          player4Name + ": " + Math.round(loserDiff) + "\n\n" +
+          "Please use " + prefix + "elo to check your new elo```"
         );
         return;
         
@@ -985,6 +997,9 @@ cupid.on("message", async message => {
         var wData = getPlayerSql.get(winner);
         var lData = getPlayerSql.get(loser);
         
+        let player1Name = cupid.users.find(playerObject => playerObject.id == winner).username;
+        let player2Name = cupid.users.find(playerObject => playerObject.id == loser).username;
+        
         var r1 = Math.pow(10, wData.elo1 / 400);
         var r2 = Math.pow(10, lData.elo1 / 400);
         
@@ -1000,13 +1015,19 @@ cupid.on("message", async message => {
           s1 = 0.5;
           s2 = 0.5;
         }
+        
+        var winnderDiff = 32 * (s1 - e1);
+        var loserDiff = 32 * (s2 - e2);
         var newr1 = wData.elo1 + 32 * (s1 - e1);
         var newr2 = lData.elo1 + 32 * (s2 - e2);
         updatePlayerELO1Sql.run(newr1, winner);
         updatePlayerELO1Sql.run(newr2, loser);
         
         message.channel.send(
-          "The match " + mapCode + " is completed. Player elos have been updated, please use " + prefix + "elo to check your current elo"
+          "```The match " + mapCode + " is completed.\nELO changes:\n\n" +
+          player1Name + ": " + Math.round(winnderDiff) + "\n" +
+          player2Name + ": " + Math.round(loserDiff) + "\n\n" +
+          "Please use " + prefix + "elo to check your new elo```"
         );
         return;
       }
