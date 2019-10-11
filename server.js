@@ -366,7 +366,7 @@ cupid.on("message", async message => {
       availGame += "```";
       message.channel.send(availGame);
     } else {
-      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match. " + prefix + "join to join a game first")
+      message.channel.send("<@" + message.author.id + "> the match code does not exist. Please try a different match. Use " + prefix + "join to join a game first")
     }
   }
   
