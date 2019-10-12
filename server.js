@@ -80,6 +80,10 @@ cupid.on("message", async message => {
             "value": "Link to a common wargroove terms video"
           },
           {
+            "name": "\$preview`",
+            "value": "Link to the Wargroove 2.0 preview mod based on the data we have"
+          },
+          {
             "name": "`$fite`",
             "value": "Assign you the LFM role. This role will be mentioned when a 2 player game is created"
           },
@@ -129,7 +133,30 @@ cupid.on("message", async message => {
       return;
     }
     
-    if (args[0] === "help") {
+    if (args[0] === "preview") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$preview"
+          },
+          {
+            "name": "Description",
+            "value": "Link to the download for Wargroove 2.0 preview mod"
+          },
+          {
+            "name": "Arguments",
+            "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } if (args[0] === "help") {
       const embed = {
         "color": 7647991,
         "author": {
@@ -681,7 +708,7 @@ cupid.on("message", async message => {
       return;
     }
 
-    if (playerCount < 2 || playerCount > 4) {
+    if (isNaN(playerCount) || playerCount < 2 || playerCount > 4) {
       message.channel.send(
         "You must provide a player count between 2 to 4. For more details, see " +
           prefix +
@@ -977,7 +1004,7 @@ cupid.on("message", async message => {
     const gameMode = args[2] && args[2] !== "any" ? args[2] : "%";
     const playerCount = args[3] && args[3] !== "any" ? parseInt(args[3]) : "%";
     
-    if ((!isNaN(playerCount) && (playerCount < 2 || playerCount > 4)) || (isNaN(playerCount) && playerCount !== "%")) {
+    if ((!isNaN(playerCount) || (playerCount < 2 || playerCount > 4)) || (isNaN(playerCount) && playerCount !== "%")) {
       message.channel.send(
         "You must provide a player count between 2 to 4. For more details, see " +
           prefix +
@@ -1325,7 +1352,7 @@ cupid.on("message", async message => {
     
     if (result !== "win" && result !== "draw" && result !== "abandon") {
       message.channel.send(
-        "You must provide a valid result between \"win\" and \"draw\", see " +
+        "You must provide a valid result between \"win\", \"draw\" and \"abandon\", see " +
           prefix +
           "help conclude"
       );
