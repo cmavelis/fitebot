@@ -964,6 +964,13 @@ cupid.on("message", async message => {
     });
   }
   
+  if (command === "preview") {
+    message.channel.send(
+      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/632447241323544586/PreviewMod.zip"
+    );
+    return;
+  }
+  
   if (command === "games") {
     const mapName = args[0] && args[0] !== "any" ? args[0] : "%";
     const gameType = args[1] && args[1] !== "any" ? args[1] : "%";
