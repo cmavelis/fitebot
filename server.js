@@ -80,6 +80,14 @@ cupid.on("message", async message => {
             "value": "Link to a common wargroove terms video"
           },
           {
+            "name": "`$fite`",
+            "value": "Assign you the LFM role. This role will be mentioned when a 2 player game is created"
+          },
+          {
+            "name": "`fite2vs2`",
+            "value": "Assign you the LFM 2vs2 role. This role will be mentioned when a 4 player game is created"
+          },
+          {
             "name": "`$elo`",
             "value": "Shows a player's current 1vs1 and 2vs2 elo"
           },
@@ -250,7 +258,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "Description",
-            "value": "Assigns the role for 1vs1 games. When a user creates a sync 2 player game, this role will be mentioned"
+            "value": "Assigns the role for 1vs1 games. When a user creates a sync 2 player game, this role will be mentioned. Use the command again will remove the role"
           },
           {
             "name": "Arguments",
@@ -259,7 +267,7 @@ cupid.on("message", async message => {
         ]
       };
       message.channel.send({ embed });
-    } else if (args[0] === "fite2vs2" || args[0] === "") {
+    } else if (args[0] === "fite2vs2" || args[0] === "lfg2vs2") {
       const embed = {
         "color": 7647991,
         "author": {
@@ -273,7 +281,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "Description",
-            "value": "Assigns the role for 2vs2 games. When a user creates a sync 4 player game, this role will be mentioned"
+            "value": "Assigns the role for 2vs2 games. When a user creates a sync 4 player game, this role will be mentioned. Use the command again will remove the role"
           },
           {
             "name": "Arguments",
