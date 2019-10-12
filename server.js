@@ -520,13 +520,8 @@ cupid.on("message", async message => {
     var player;
     
     if (args[0]) {
-      player = args[0].id;
-    } else {
-      message.channel.send(
-        "player " + args[0] + " does not exist. Please check your spelling and try again"
-      );
-      return;
-    }
+      player = args[0].slice(2, args[0].length -1)
+      console.log(player);
     } else {
       player = message.author.id;
     }
@@ -544,7 +539,7 @@ cupid.on("message", async message => {
         );
       } else {
         message.channel.send(
-          "<@" + message.author.id + "> " + args[0] + "'s 1vs1 ELO is 1000 and your 2vs2 ELO is 1000"
+          "<@" + message.author.id + "> " + args[0].username + "'s 1vs1 ELO is 1000 and " + args[0].username + "'s 2vs2 ELO is 1000"
         );
       }
     } else {
