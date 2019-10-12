@@ -88,7 +88,7 @@ cupid.on("message", async message => {
             "value": "Assign you the LFM role. This role will be mentioned when a 2 player game is created"
           },
           {
-            "name": "`fite2vs2`",
+            "name": "`$fite2vs2`",
             "value": "Assign you the LFM 2vs2 role. This role will be mentioned when a 4 player game is created"
           },
           {
@@ -105,7 +105,7 @@ cupid.on("message", async message => {
           },
           {
             "name": "`$ongoing`",
-            "value": "Lists all games that have been filled and is currently in session"
+            "value": "Lists all games that have been filled and are currently in session"
           },
           {
             "name": "`$join`",
@@ -518,7 +518,7 @@ cupid.on("message", async message => {
     } else {
       message.member.addRole(message.guild.roles.find(role => role.name === oneRole));
       message.channel.send(
-        "<@" + player + "> your now have " + oneRole + ". You will be pinged when someone creates a new sync 1vs1 game."
+        "<@" + player + "> you now have " + oneRole + " role. You will be pinged when someone creates a new sync 1vs1 game."
       );
     }
   }
@@ -533,7 +533,7 @@ cupid.on("message", async message => {
     } else {
       message.member.addRole(message.guild.roles.find(role => role.name === twoRole));
       message.channel.send(
-        "<@" + player + "> your now have " + twoRole + ". You will be pinged when someone creates a new sync 2vs2 game."
+        "<@" + player + "> you now have " + twoRole + " role. You will be pinged when someone creates a new sync 2vs2 game."
       );
     }
   }
@@ -921,8 +921,8 @@ cupid.on("message", async message => {
     let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
     
     var gameRows = getGamesSql.all(mapName, gameType, gameMode, playerCount);
-    
-    var overallMessage = ""
+    console.log(gameRows.length);
+    var overallMessage = "";
     
     gameRows.forEach((row) => {
       
@@ -995,7 +995,7 @@ cupid.on("message", async message => {
     if (overallMessage === "") {
       overallMessage = "No match was found :c. Try creating a game first with " + prefix + "create"
     }
-    message.channel.send(availGame);
+    message.channel.send(overallMessage);
   }
   
   if (command === "preview") {
