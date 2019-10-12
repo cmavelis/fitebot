@@ -520,15 +520,13 @@ cupid.on("message", async message => {
     var player;
     
     if (args[0]) {
-      var playerObj = cupid.users.find(playerObject => playerObject.tag == args[0]);
-      if (playerObj) {
-        player = playerObj.id;
-      } else {
-        message.channel.send(
-          "player " + args[0] + " does not exist. Please check your spelling and try again"
-        );
-        return;
-      }
+      player = args[0].id;
+    } else {
+      message.channel.send(
+        "player " + args[0] + " does not exist. Please check your spelling and try again"
+      );
+      return;
+    }
     } else {
       player = message.author.id;
     }
