@@ -426,6 +426,18 @@ cupid.on("message", async message => {
     
     
   }
+  
+  if (command === "fite" || command === "lfg") {
+    const playerId = message.author.id;
+    const player = cupid.users.find(playerObject => playerObject.id == player);
+    
+    if (message.member.roles.find(r => r.name === oneRole)) {
+      message.member.removeRole(oneRole);
+      message.channel.send(
+        "<@" + player + "> your " + oneRole + "role has been removed"
+      );
+    } 
+  }
 
   if (command === "ping") {
     const m = await message.channel.send("Ping?");
