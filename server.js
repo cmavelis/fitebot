@@ -156,7 +156,7 @@ cupid.on("message", async message => {
         ]
       };
       message.channel.send({ embed });
-    } if (args[0] === "help") {
+    } else if (args[0] === "help") {
       const embed = {
         "color": 7647991,
         "author": {
@@ -922,6 +922,8 @@ cupid.on("message", async message => {
     
     var gameRows = getGamesSql.all(mapName, gameType, gameMode, playerCount);
     
+    var overallMessage = ""
+    
     gameRows.forEach((row) => {
       
       var availGame = "```css\n" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + Math.round(row.playerCount);
@@ -987,8 +989,13 @@ cupid.on("message", async message => {
       });
       
       availGame += "```";
-      message.channel.send(availGame);
+      overallMessage += availGame;
     });
+    
+    if (overallMessage === "") {
+      overallMessage = "No match was found :c. Try creating a game first with " + prefix + "create"
+    }
+    message.channel.send(availGame);
   }
   
   if (command === "preview") {
@@ -1035,7 +1042,7 @@ cupid.on("message", async message => {
     let getPlayerSql = db.prepare('SELECT * FROM Players WHERE player = ?');
     
     var gameRows = getGamesSql.all(mapName, gameType, gameMode, playerCount);
-    
+    var overallMessage = ""
     gameRows.forEach((row) => {
       
       var availGame = "```css\n" + row.mapName + " - " + row.mapCode + " - " + row.gameMode + " - " + row.gameType + " - players: " + Math.round(row.playerCount);
@@ -1101,8 +1108,14 @@ cupid.on("message", async message => {
       });
       
       availGame += "```";
-      message.channel.send(availGame);
+      overallMessage += availGame;
     });
+    
+    if (overallMessage === "") {
+      overallMessage = "No match was found :c. Try creating a game first with " + prefix + "create"
+    }
+    
+    message.channel.send(overallMessage);
   }
   
   if (command === "join") {
