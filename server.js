@@ -520,8 +520,14 @@ cupid.on("message", async message => {
     var player;
     
     if (args[0]) {
-      player = args[0].slice(2, args[0].length -1)
-      console.log(player);
+      if (args[0].slice(0,3) === "<@!") {
+        player = args[0].slice(3, args[0].length -1)
+      } else {
+        player = args[0].slice(2, args[0].length -1)
+      }
+      console.log(player)
+      var playerName = cupid.users.find(playerObject => playerObject.id == player).username;
+      console.log(playerName)
     } else {
       player = message.author.id;
     }
@@ -539,7 +545,7 @@ cupid.on("message", async message => {
         );
       } else {
         message.channel.send(
-          "<@" + message.author.id + "> " + args[0].username + "'s 1vs1 ELO is 1000 and " + args[0].username + "'s 2vs2 ELO is 1000"
+          "<@" + message.author.id + "> " + playerName + "'s 1vs1 ELO is 1000 and " + playerName + "'s 2vs2 ELO is 1000"
         );
       }
     } else {
@@ -558,7 +564,7 @@ cupid.on("message", async message => {
       } else {
         message.channel.send(
           
-          "<@" + message.author.id + "> "+ args[0] + "'s 1vs1 ELO is " + Math.round(playerRow.elo1) + " and your 2vs2 ELO is " + Math.round(playerRow.elo2)
+          "<@" + message.author.id + "> " + playerName + "'s 1vs1 ELO is " + Math.round(playerRow.elo1) + " and " + playerName + "'s 2vs2 ELO is " + Math.round(playerRow.elo2)
         );
       }
     }
