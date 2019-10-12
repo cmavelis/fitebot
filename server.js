@@ -1000,7 +1000,7 @@ cupid.on("message", async message => {
   
   if (command === "preview") {
     message.channel.send(
-      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/632447241323544586/PreviewMod.zip"
+      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/632639885840220171/PreviewMod.zip"
     );
     return;
   }
