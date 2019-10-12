@@ -236,6 +236,52 @@ cupid.on("message", async message => {
         ]
       };
       message.channel.send({ embed });
+    } else if (args[0] === "fite" || args[0] === "lfg") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$fite"
+          },
+          {
+            "name": "Description",
+            "value": "Assigns the role for 1vs1 games. When a user creates a sync 2 player game, this role will be mentioned"
+          },
+          {
+            "name": "Arguments",
+            "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
+    } else if (args[0] === "fite2vs2" || args[0] === "") {
+      const embed = {
+        "color": 7647991,
+        "author": {
+          "name": "Cupid Help Manual",
+          "icon_url": "https://cdn.discordapp.com/avatars/631316790101803028/d81b4a5ef1cfe2c2c1991636dce2cc48.png"
+        },
+        "fields": [
+          {
+            "name": "Syntax",
+            "value": "$fite2vs2"
+          },
+          {
+            "name": "Description",
+            "value": "Assigns the role for 2vs2 games. When a user creates a sync 4 player game, this role will be mentioned"
+          },
+          {
+            "name": "Arguments",
+            "value": "None"
+          }
+        ]
+      };
+      message.channel.send({ embed });
     } else if (args[0] === "create") {
       const embed = {
         "color": 7647991,
@@ -428,15 +474,33 @@ cupid.on("message", async message => {
   }
   
   if (command === "fite" || command === "lfg") {
-    const playerId = message.author.id;
-    const player = cupid.users.find(playerObject => playerObject.id == player);
-    
+    var player = message.author.id;
     if (message.member.roles.find(r => r.name === oneRole)) {
-      message.member.removeRole(oneRole);
+      message.member.removeRole(message.guild.roles.find(role => role.name === oneRole));
       message.channel.send(
-        "<@" + player + "> your " + oneRole + "role has been removed"
+        "<@" + player + "> your " + oneRole + " role has been removed"
       );
-    } 
+    } else {
+      message.member.addRole(message.guild.roles.find(role => role.name === oneRole));
+      message.channel.send(
+        "<@" + player + "> your now have " + oneRole + ". You will be pinged when someone creates a new sync 1vs1 game."
+      );
+    }
+  }
+  
+  if (command === "fite2vs2" || command === "lfg2vs2") {
+    var player = message.author.id;
+    if (message.member.roles.find(r => r.name === twoRole)) {
+      message.member.removeRole(message.guild.roles.find(role => role.name === twoRole));
+      message.channel.send(
+        "<@" + player + "> your " + twoRole + " role has been removed"
+      );
+    } else {
+      message.member.addRole(message.guild.roles.find(role => role.name === twoRole));
+      message.channel.send(
+        "<@" + player + "> your now have " + twoRole + ". You will be pinged when someone creates a new sync 2vs2 game."
+      );
+    }
   }
 
   if (command === "ping") {
