@@ -1979,7 +1979,7 @@ cupid.on("message", async message => {
 
   if (command === "golf") {
     message.channel.send(
-      "Wulfar isn't so great? Are you kidding me? When was the last time you saw a Commander with such an ability and movement with his upswing? Wulfar puts the game on another level, and we will be blessed if we ever see a Commander with his aim and follow through on the map again. Caesar breaks records. Tenri breaks records. Wulfar breaks the rules. You can keep your statistics. I prefer the magic.\n\n                                      --approved by Xmo5"
+      "Wulfar isn't so great? Are you kidding me? When was the last time you saw a Commander with such an ability and movement with his upswing? Wulfar puts the game on another level, and we will be blessed if we ever see a Commander with his aim and follow through on the map again. Caesar breaks records. Tenri breaks records. Wulfar breaks the rules. You can keep your statistics. I prefer the magic."
     );
     return;
   }
