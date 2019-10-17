@@ -1985,7 +1985,7 @@ cupid.on("message", async message => {
   }
   
   if (command === "meme") {
-    const co = args[0];
+    const co = args[0] ? args[0] : message.author.username;
     message.channel.send(
       co + " isn't so great? Are you kidding me? When was the last time you saw a Commander with such an ability and movement with its power? " + co + " puts the game on another level, and we will be blessed if we ever see a Commander with their dashing look and follow through on the map again. " + (co.toLowerCase() === "caesar" ? "Nuru" : "Caesar") + " breaks records. " + (co.toLowerCase() === "tenri" ? "Nuru" : "Tenri") + " breaks records. " + co + " breaks the rules. You can keep your statistics. I prefer the magic."
     );
