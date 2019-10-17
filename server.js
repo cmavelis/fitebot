@@ -1151,7 +1151,7 @@ cupid.on("message", async message => {
 
   if (command === "preview") {
     message.channel.send(
-      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/634281039769894913/PreviewMod.zip\nIMPORTANT NOTE: To play twins, you have to s"
+      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/634281039769894913/PreviewMod.zip\nIMPORTANT NOTE: To play twins, you have to select the scenario with [TWIN] prefix, otherwise their groove wouldn't work. There's technically 2 twins commander, but it doesn't matter which you pick, both of them work, and they do the same thing."
     );
     return;
   }
