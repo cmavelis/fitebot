@@ -82,7 +82,7 @@ cupid.on("message", async message => {
             value: "Link to a common wargroove terms video"
           },
           {
-            name: "$preview`",
+            name: "`$preview`",
             value:
               "Link to the Wargroove 2.0 preview mod based on the data we have"
           },
@@ -1151,7 +1151,7 @@ cupid.on("message", async message => {
 
   if (command === "preview") {
     message.channel.send(
-      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/632639885840220171/PreviewMod.zip"
+      "Here is the 2.0 preview mod https://cdn.discordapp.com/attachments/339949025631535124/634281039769894913/PreviewMod.zip\nIMPORTANT NOTE: To play twins, you have to s"
     );
     return;
   }
