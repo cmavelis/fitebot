@@ -1984,6 +1984,13 @@ cupid.on("message", async message => {
     return;
   }
   
+  if (command === "bans") {
+    message.channel.send(
+      "Plese PM @ endiment#0967"
+    );
+    return;
+  }  
+  
   if (command === "meme") {
     const co = args[0] ? args[0] : message.author.username;
     message.channel.send(
