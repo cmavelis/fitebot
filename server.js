@@ -765,7 +765,8 @@ cupid.on("message", async message => {
     const gameMode = args[2] ? args[2] : "ranked";
     const playerCount = args[3] ? parseInt(args[3]) : 2;
     const gameType = args[4] ? args[4] : "sync";
-    const player = message.author.id;
+    const player = args[6] ? args[6] : message.author.id;
+    //const player = message.author.id;
 
     if (!mapName || !mapCode) {
       message.channel.send(
@@ -1219,6 +1220,7 @@ cupid.on("message", async message => {
       }
       team1.forEach(function(player, index) {
         var playerRow = getPlayerSql.get(player);
+        console.log(playerRow.player);
         availGame +=
           "\n" +
           cupid.users.find(playerObject => playerObject.id == playerRow.player)
