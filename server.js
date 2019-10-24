@@ -30,6 +30,14 @@ if (!exists) {
   );
   console.log("New table Maps created!");
 } else {
+  let getGamesSql = db.prepare(
+      'SELECT * FROM Matches'
+    );
+
+    var gameRows = getGamesSql.all();
+    gameRows.forEach(row => {
+      console.log(row);
+    });
   console.log('Database "Cupid" ready to go!');
 }
 
@@ -765,8 +773,8 @@ cupid.on("message", async message => {
     const gameMode = args[2] ? args[2] : "ranked";
     const playerCount = args[3] ? parseInt(args[3]) : 2;
     const gameType = args[4] ? args[4] : "sync";
-    const player = args[6] ? args[6] : message.author.id;
-    //const player = message.author.id;
+    //const player = args[6] ? args[6] : message.author.id;
+    const player = message.author.id;
 
     if (!mapName || !mapCode) {
       message.channel.send(
