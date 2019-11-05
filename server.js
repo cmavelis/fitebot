@@ -2002,7 +2002,7 @@ cupid.on("message", async message => {
   }  
   
   if (command === "meme") {
-    var rngAdj = ["excellent music", "waifu potentional", "dashing looks"]
+    var rngAdj = ["excellent music", "waifu potential", "dashing looks"]
     var rng = Math.floor(Math.random() * 3)
     const co = args[0] ? args[0] : message.author.username;
     message.channel.send(
