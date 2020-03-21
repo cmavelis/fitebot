@@ -2001,8 +2001,8 @@ cupid.on("message", async message => {
     return;
   }  
   
-  var meme1 = "At no point did I mention anyone skipping builds. My math and examples are based on an objective numerical scale based on currency.\n" \
-              "And it's funny you bring up {unitC}, I just tested it. If it's possible for {random number 1-3} {unitC} to kill a {OPunit}, it's extremely unlikely, because I haven't had it happen a single time. Always takes {random number 2-4} {unitC} to kill {random number 1-3} {OPunit}, meaning {OPunit}s are a more useful purchase. I fully intend to do more raw testing later on as well, to try and figure out when exactly {OPunit}s get beaten.";
+  var meme1 = "At no point did I mention anyone skipping builds. My math and examples are based on an objective numerical scale based on currency.\n" +
+              "And it's funny you bring up {1}, I just tested it. If it's possible for {2} {1} to kill a {0}, it's extremely unlikely, because I haven't had it happen a single time. Always takes {3} {1} to kill {2} {0}, meaning {0}s are a more useful purchase. I fully intend to do more raw testing later on as well, to try and figure out when exactly {0}s get beaten.";
   
   if (command === "meme") {
     var rngAdj = ["excellent music", "waifu potential", "dashing looks"]
@@ -2014,14 +2014,32 @@ cupid.on("message", async message => {
     return;
   }
   
+  String.format = function() {
+      var s = arguments[0];
+      for (var i = 0; i < arguments.length - 1; i++) {       
+          var reg = new RegExp("\\{" + i + "\\}", "gm");             
+          s = s.replace(reg, arguments[i + 1]);
+      }
+      return s;
+  }
+  
   if (command === "randomMeme" || command === "rmeme") {
-    var 
-    var OPunit = args[0] ? args[0] : "doggo";
-    var rngUnitC = ["soldier","pike","dog","archer","wagon","cav","mage","treb","ballista","giant","killsauce","balloon","shoe","aeronaut","witch","dragon","alsame","barge","amphibian","turtle","harpoon","warship","mathlord","sedgehun","loveless","xTimekey"]
-    var rngUnitCPick = Math.floor(Math.random() * rngAdj.length);
-    var unitC = rngUnitC[rngUnitCPick];
-    var rng1to3 = Math.ceil(Math.random() * 3);
-    var rng2to4 = rng1to3 + 1;
+    var rngPickMeme = Math.floor(Math.random() * 1);
+    if (rngPickMeme == 0) {
+      var opUnit = args[0] ? args[0] : "doggo";
+      var rngUnitC = ["soldier","pike","dog","archer","wagon","cav","mage","treb","ballista","giant","killsauce","balloon","shoe","aeronaut","witch","dragon","alsame","barge","amphibian","turtle","harpoon","warship","mathlord","sedgehun","loveless","xTimekey"];
+      var rngUnitCPick = Math.floor(Math.random() * rngUnitC.length);
+      var unitC = rngUnitC[rngUnitCPick];
+      var rng1to3 = Math.ceil(Math.random() * 3);
+      var rng2to4 = rng1to3 + 1;
+      console.log()
+        String.format(meme1, opUnit, unitC, rng1to3, rng2to4));
+      message.channel.send(
+        String.format(meme1, opUnit, unitC, rng1to3, rng2to4)
+      );
+      return;
+    }
+    
     var rng100to900 = Math.ceil(Math.random() * 9) * 100;
     
     
