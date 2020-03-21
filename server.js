@@ -2003,7 +2003,7 @@ cupid.on("message", async message => {
   
   var meme1 = "At no point did I mention anyone skipping builds. My math and examples are based on an objective numerical scale based on currency.\n\n" +
               "And it's funny you bring up {1}, I just tested it. If it's possible for {2} {1} to kill a {0}, it's extremely unlikely, because I haven't had it happen a single time. Always takes {3} {1} to kill {2} {0}, meaning {0}s are a more useful purchase. I fully intend to do more raw testing later on as well, to try and figure out when exactly {0}s get beaten.\n\n" +
-              "If we figure each player gets {4} gold every turn, for the sake of example, and one player summons {5} {2} every turn, and the other summons {6} {0}s every turn, assuming the {0}s don't attack once and the {1}s kill {2} {0} each each turn, it takes about {7} turns before the {1}s can defeat all {0}s.\n\n" +
+              "If we figure each player gets {4} gold every turn, for the sake of example, and one player summons {5} {1} every turn, and the other summons {6} {0}s every turn, assuming the {0}s don't attack once and the {1}s kill {2} {0} each each turn, it takes about {7} turns before the {1}s can defeat all {0}s.\n\n" +
               "Again, assuming the {0}s don't attack at all. A lot can happen in that amount of turns.\n\n" +
               "Keep in mind, even if {0}s have less HP vs other classes, the fact that classes can't move through them after attacking them makes having a cheap class that can be sacrificed (Due to their low cost) valuable. They're valuable over {1} because of the myriad of other advantages they have that {1} don't. Like an extremely easy-to-execute crit that's practically guaranteed";
   var meme2 = "{2} {0}s would still be enough to hinder a {1} and allow further {0}s to run with a lot less worry, but also depending on the income each turn, it's still entirely possible to match {3} {0}s per {1}, they'd simply be staggered between turns.\n\n" +
@@ -2028,7 +2028,7 @@ cupid.on("message", async message => {
       return s;
   }
   
-  if (command === "randomMeme" || command === "rmeme") {
+  if (command === "op") {
     var rngPickMeme = Math.floor(Math.random() * 2);
     var opUnit = args[0] ? args[0] : "doggo";
     var rngUnitC = ["soldier","pike","dog","archer","wagon","cav","mage","treb","ballista","giant","killsauce","balloon","shoe","aeronaut","witch","dragon","alsame","barge","amphibian","turtle","harpoon","warship","mathlord","sedgehun","loveless","xTimekey"];
