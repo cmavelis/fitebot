@@ -2001,6 +2001,14 @@ cupid.on("message", async message => {
     return;
   }  
   
+  var meme1 = "At no point did I mention anyone skipping builds. My math and examples are based on an objective numerical scale based on currency.\n" \
+              "And it's funny you bring up {unitC}, I just tested it. If it's possible for {random number 1-3} {unitC} to kill a {OPunit}, it's extremely unlikely, because I haven't had it happen a single time. Always takes {random number 2-4} {unitC} to kill {random number 1-3} {OPunit}, meaning {OPunit}s are a more useful purchase. I fully intend to do more raw testing later on as well, to try and figure out when exactly {OPunit}s get beaten. "
+
+ If we figure each player gets {random number between 100-900} gold every turn, for the sake of example, and one player summons {random number 1-3} {unitB} every turn, and the other summons {random number 3-5} {OPunit}s every turn, assuming the {OPunit}s don't attack once and the {unitc}s kill {random number 1-3} {OPunit} each each turn, it takes about {random number 6-8} turns before the {unitC}s can defeat all {OPunit}s. ​ 
+
+Again, assuming the {OPunit}s don't attack at all. A lot can happen in that amount of turns.
+
+ Keep in mind, even if {OPunit}s have less HP vs other classes, the fact that classes can't move through them after attacking them makes having a cheap class that can be sacrificed (Due to their low cost) valuable. They're valuable over {unitC} because of the myriad of other advantages they have that {unitC} don't. Like an extremely easy-to-execute crit that's practically guaranteed"
   if (command === "meme") {
     var rngAdj = ["excellent music", "waifu potential", "dashing looks"]
     var rng = Math.floor(Math.random() * 3)
@@ -2009,6 +2017,11 @@ cupid.on("message", async message => {
       co + " isn't so great? Are you kidding me? When was the last time you saw a Commander with such an ability and movement with its power? " + co + " puts the game on another level, and we will be blessed if we ever see a Commander with their " + rngAdj[rng] + " and follow through on the map again. " + (co.toLowerCase() === "caesar" ? "Nuru" : "Caesar") + " breaks records. " + (co.toLowerCase() === "tenri" ? "Nuru" : "Tenri") + " breaks records. " + co + " breaks the rules. You can keep your statistics. I prefer the magic."
     );
     return;
+  }
+  
+  if (command === "randomMeme" || command === "rmeme") {
+    var rngUnitC = ["soldier","pike","dog","archer","wagon","cav",]
+    
   }
 });
 
