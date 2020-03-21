@@ -2002,13 +2002,8 @@ cupid.on("message", async message => {
   }  
   
   var meme1 = "At no point did I mention anyone skipping builds. My math and examples are based on an objective numerical scale based on currency.\n" \
-              "And it's funny you bring up {unitC}, I just tested it. If it's possible for {random number 1-3} {unitC} to kill a {OPunit}, it's extremely unlikely, because I haven't had it happen a single time. Always takes {random number 2-4} {unitC} to kill {random number 1-3} {OPunit}, meaning {OPunit}s are a more useful purchase. I fully intend to do more raw testing later on as well, to try and figure out when exactly {OPunit}s get beaten. "
-
- If we figure each player gets {random number between 100-900} gold every turn, for the sake of example, and one player summons {random number 1-3} {unitB} every turn, and the other summons {random number 3-5} {OPunit}s every turn, assuming the {OPunit}s don't attack once and the {unitc}s kill {random number 1-3} {OPunit} each each turn, it takes about {random number 6-8} turns before the {unitC}s can defeat all {OPunit}s. ​ 
-
-Again, assuming the {OPunit}s don't attack at all. A lot can happen in that amount of turns.
-
- Keep in mind, even if {OPunit}s have less HP vs other classes, the fact that classes can't move through them after attacking them makes having a cheap class that can be sacrificed (Due to their low cost) valuable. They're valuable over {unitC} because of the myriad of other advantages they have that {unitC} don't. Like an extremely easy-to-execute crit that's practically guaranteed"
+              "And it's funny you bring up {unitC}, I just tested it. If it's possible for {random number 1-3} {unitC} to kill a {OPunit}, it's extremely unlikely, because I haven't had it happen a single time. Always takes {random number 2-4} {unitC} to kill {random number 1-3} {OPunit}, meaning {OPunit}s are a more useful purchase. I fully intend to do more raw testing later on as well, to try and figure out when exactly {OPunit}s get beaten.";
+  
   if (command === "meme") {
     var rngAdj = ["excellent music", "waifu potential", "dashing looks"]
     var rng = Math.floor(Math.random() * 3)
@@ -2020,7 +2015,15 @@ Again, assuming the {OPunit}s don't attack at all. A lot can happen in that amou
   }
   
   if (command === "randomMeme" || command === "rmeme") {
-    var rngUnitC = ["soldier","pike","dog","archer","wagon","cav",]
+    var 
+    var OPunit = args[0] ? args[0] : "doggo";
+    var rngUnitC = ["soldier","pike","dog","archer","wagon","cav","mage","treb","ballista","giant","killsauce","balloon","shoe","aeronaut","witch","dragon","alsame","barge","amphibian","turtle","harpoon","warship","mathlord","sedgehun","loveless","xTimekey"]
+    var rngUnitCPick = Math.floor(Math.random() * rngAdj.length);
+    var unitC = rngUnitC[rngUnitCPick];
+    var rng1to3 = Math.ceil(Math.random() * 3);
+    var rng2to4 = rng1to3 + 1;
+    var rng100to900 = Math.ceil(Math.random() * 9) * 100;
+    
     
   }
 });
