@@ -1228,7 +1228,6 @@ cupid.on("message", async message => {
       }
       team1.forEach(function(player, index) {
         var playerRow = getPlayerSql.get(player);
-        console.log(playerRow.player);
         availGame +=
           "\n" +
           cupid.users.find(playerObject => playerObject.id == playerRow.player)
@@ -1247,10 +1246,16 @@ cupid.on("message", async message => {
       }
       team2.forEach(function(player, index) {
         var playerRow = getPlayerSql.get(player);
-        console.log(cupid.users.find(playerObject => playerObject.id == playerRow.player));
+        console.log(cupid.users.find(playerObject => playerObject.id == playerRow.player) == null);
+        var tagToAdd;
+        if (cupid.users.find(playerObject => playerObject.id == playerRow.player) == null){
+          tagToAdd = "unknown";
+        } else {
+          tagToAdd = cupid.users.find(playerObject => playerObject.id == playerRow.player) == null
+        }
         availGame +=
           "\n" +
-          cupid.users.find(playerObject => playerObject.id == playerRow.player) == null ? "deleted user" : 
+          cupid.users.find(playerObject => playerObject.id == playerRow.player) == null ? "unknown player" : cupid.users.find(playerObject => playerObject.id == playerRow.player)
             .tag;
 
         if (parseInt(row.playerCount) === 4) {
