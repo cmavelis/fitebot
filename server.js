@@ -1247,9 +1247,10 @@ cupid.on("message", async message => {
       }
       team2.forEach(function(player, index) {
         var playerRow = getPlayerSql.get(player);
+        console.log(cupid.users.find(playerObject => playerObject.id == playerRow.player));
         availGame +=
           "\n" +
-          cupid.users.find(playerObject => playerObject.id == playerRow.player)
+          cupid.users.find(playerObject => playerObject.id == playerRow.player) == null ? "deleted user" : 
             .tag;
 
         if (parseInt(row.playerCount) === 4) {
