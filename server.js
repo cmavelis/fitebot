@@ -1228,10 +1228,16 @@ cupid.on("message", async message => {
       }
       team1.forEach(function(player, index) {
         var playerRow = getPlayerSql.get(player);
+        var tagToAdd;
+        if (cupid.users.find(playerObject => playerObject.id == playerRow.player) == null){
+          tagToAdd = "Unknown User";
+        } else {
+          tagToAdd = cupid.users.find(playerObject => playerObject.id == playerRow.player)
+            .tag;
+        }
         availGame +=
           "\n" +
-          cupid.users.find(playerObject => playerObject.id == playerRow.player)
-            .tag;
+          tagToAdd;
 
         if (parseInt(row.playerCount) === 4) {
           availGame += ": " + Math.round(playerRow.elo2);
@@ -1249,14 +1255,14 @@ cupid.on("message", async message => {
         console.log(cupid.users.find(playerObject => playerObject.id == playerRow.player) == null);
         var tagToAdd;
         if (cupid.users.find(playerObject => playerObject.id == playerRow.player) == null){
-          tagToAdd = "unknown";
+          tagToAdd = "Unknown User";
         } else {
-          tagToAdd = cupid.users.find(playerObject => playerObject.id == playerRow.player) == null
+          tagToAdd = cupid.users.find(playerObject => playerObject.id == playerRow.player)
+            .tag;
         }
         availGame +=
           "\n" +
-          cupid.users.find(playerObject => playerObject.id == playerRow.player) == null ? "unknown player" : cupid.users.find(playerObject => playerObject.id == playerRow.player)
-            .tag;
+          tagToAdd;
 
         if (parseInt(row.playerCount) === 4) {
           availGame += ": " + Math.round(playerRow.elo2);
