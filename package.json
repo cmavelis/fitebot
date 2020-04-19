@@ -1,5 +1,5 @@
 {
-  "name": "cupid",
+  "name": "fitebot",
   "version": "0.0.1",
   "description": "A matchmaking bot for discord for finding opponents",
   "main": "server.js",
